@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ *  THIS FILE MUST BE ENCODED IN UTF-8 FORMAT/ECODING.
+ *  THIS FILE MUST CONTAIN SYNTACTICALLY CORRECT XML 1.0 WITH EXPLICIT "END" TAGS.
+ *
+ * navigation.xml
+ *
+ *       comeniusonline
+ *
+ *  comeniusonline is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  comeniusonline is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with comeniusonline; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *  For questions contact
+ *  cuzi@openmail.cc
+ *
+ * @copyright 2011 cuzi
+ * @author cuzi cuzi@openmail.cc
+ * @package comeniusonline
+ * @version 1.06
+ * @license http://gnu.org/copyleft/gpl.html GNU GPL
+ *
+
+-->
+
+<root>
+
+    <base>http://192.168.178.31/comenius/</base><!-- With trailing slash -->
+
+    <!-- For email reply -->
+    <adminemail>admin@localhost</adminemail>
+
+    <path>/xampp/htdocs/comenius/</path><!-- With trailing slash -->
+
+    <!-- <htaccess>q</htaccess>-->
+
+    <templates>/xampp/htdocs/comenius/templates/</templates><!-- With trailing slash -->
+    <php>/xampp/htdocs/comenius/include/</php><!-- With trailing slash -->
+
+    <frame>index.html</frame><!-- Must be in the template dir -->
+    <mobile_frame>mobile_index.html</mobile_frame><!-- Must be in the template dir -->
+
+    <page param="q" name="login" index="1">login.php</page>
+
+    <page param="q" name="about" group="0">about.php</page>
+
+    <page param="q" name="welcome" group="0">welcome.php</page>
+    <page param="q" name="email" group="0">email.php</page>
+
+    <page param="q" name="logout" group="1">logout.php</page>
+    <page param="q" name="myprofile" group="1">myprofile.php</page>
+    <page param="q" name="profile" group="1">profile.php</page>
+
+    <page param="q" name="usermanager" group="2">usermanager.php</page>
+    <page param="q" name="admin" group="5">admin.php</page>
+
+
+    <json param="q" name="myprofile" group="1">ajax.myprofile.php</json>
+
+    <json param="q" name="connectPartners" group="2">ajax.connectPartners.php</json>
+    <json param="q" name="deleteUser" group="2">ajax.deleteUser.php</json>
+    <json param="q" name="showPassword" group="2">ajax.showPassword.php</json>
+    <json param="q" name="changePassword" group="2">ajax.changePassword.php</json>
+    <json param="q" name="saveNote" group="2">ajax.saveNote.php</json>
+    <json param="q" name="deleteNote" group="2">ajax.deleteNote.php</json>
+
+    <public>
+        <file>favicon.gif</file>
+        <file>favicon.png</file>
+        <file>favicon.ico</file>
+        <file>index.php</file>
+        <file>photo.php</file>
+        <file>email.php</file>
+        <file>print.php</file>
+        <file>css.php</file>
+        <file>json.php</file>
+        <file>mootools-core-1.3.js</file>
+        <file>mootools-more-1.3.js</file>
+        <file>images</file>
+        <file>js</file>
+    </public>
+
+
+
+</root>

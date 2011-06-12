@@ -1,0 +1,72 @@
+
+Hinzufügen von Lehrern:
+-----------------------
+
+ * Einloggen mit dem Adminstratoraccount
+ * In der Navigation auf die "Admin" Seite wechseln
+
+Wenn man eine Emailadresse eingibt, kann man einen Haken bei "Send a welcome email" setzen, dadurch wird an die Emailadresse eine
+Nachricht mit dem Passwort verschickt.
+
+Löschen von Lehrern:
+--------------------
+
+ * Einloggen mit dem Adminstratoraccount
+ * In der Navigation auf die "Admin" Seite wechseln
+
+Lehrer können nur gelöscht und nicht bearbeitet werden.
+Allerdings kann man, wenn eine Emailadresse eingegeben wurde eine Email mit einer Passworterinnerung schicken "Send welcome email"
+
+Zurücksetzen
+------------
+
+ * Einloggen mit dem Adminstratoraccount
+ * In der Navigation auf die "Admin" Seite wechseln
+
+Über die Resetfunktion wird die gesamte Datenbank geleert bis auf den Administratoraccount bzw. bei der 2. Funktion bis auf die Lehreraccounts.
+Außerdem werden die hochgeladenen Steckbriefbilder gelöscht.
+
+
+Hinzufügen von Schülern:
+------------------------
+
+ * Einloggen mit dem Adminstratoraccount oder einem Lehreraccount
+ * In der Navigation auf die "Usermanager" Seite wechseln
+
+Unten auf der Seite können über das Formular mehrere Schüler hinzugefügt werden.
+Durch die Eingabe der "Home school" wird etwas Übersicht erreicht, da die Schüler in der Liste oben sortiert werden können.
+Die Angabe ist aber nicht erforderlich und kann von den Schülern auch selbst eingegeben werden.
+
+Dann wählt man das Format aus und gibt in der Textbox die Schülernamen ein. Für jeden Schüler eine neue Zeile.
+
+Nach dem Absenden des Formulars kann man oben auf der Seite auch gleich die Partner für die Schüler auswählen.
+Die kann aber auch erst später erfolgen. Die Schüler können ihre Steckbriefe auch schon eingeben, wenn noch kein Partner ausgewählt ist.
+
+Beim Hinzufügen der Schüler bekommt jeder Schüler einen Loginnamen und ein zufälliges Passwort.
+Der Loginname ist (wenn noch nicht vergeben) der Nachname plus die ersten beiden Buchstaben des Vornamens.
+(Dabei wird versucht im Loginnamen nur deutsche Buchstaben zu verwenden)
+
+
+Passwörter von Schülern:
+------------------------
+
+ * Einloggen mit dem Adminstratoraccount oder einem Lehreraccount
+ * In der Navigation auf die "Usermanager" Seite wechseln
+
+Über den Link "Show passwords" erhält man eine Liste mit allen Schüler- und Lehrerpasswörtern.
+Diese Liste kann z.B. in ein Tabellenkalkulationsprogamm kopiert werden um sie auszudrucken.
+
+
+Steckbriefe aktivieren/deaktivieren:
+------------------------------------
+
+Wenn ein Schüler seinen Steckbrief fertig ausgefüllt hat, kann er ihn als "Completed" markieren.
+Im Usermanager erscheinen diese Einträge als gelber Link "Waiting for approval" hinter dem Schüler.
+Klickt man auf den Link, erscheint der Steckbrief des Schülers.
+Man kann den Steckbrief nun bestätigen, erst dann kann auch der Ausstauschpartner den Steckbrief sehen.
+Anstatt den Steckbrief zu bestätigen kann auch eine Notiz angefügt werden, damit der Schüler bestimmte Informationen ändern kann.
+Über eine Notiz wird der Schüler per Email benachrichtigt (wenn er eine Emailadresse angegeben hat).
+
+Bis der Steckbrief nicht bestätigt ist, kann der Schüler ihn noch ändern (z.B. wenn eine Notiz ihn dazu auffordert).
+
+Wenn ein Steckbrief aktiviert wurde, kann er jederzeit über den gleichen Link (der jetzt grün ist) deaktiviert werden.

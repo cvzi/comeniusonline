@@ -1,0 +1,486 @@
+{**
+* templates/usermanager.html
+*
+*       comeniusonline
+*
+*  comeniusonline is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  comeniusonline is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with comeniusonline; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*  For questions contact
+*  cuzi@openmail.cc
+*
+* @copyright 2011 cuzi
+* @author cuzi
+* @package comeniusonline
+* @version 1.06
+* @license http://gnu.org/copyleft/gpl.html GNU GPL
+*}
+
+<style type="text/css">
+    {literal}
+    select
+    {
+        background: #eaf8fc;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+
+        border-width: 1px;
+        border-style: solid;
+        border-color: #c4d9df #a4c3ca #83afb7;
+        height: 25px;
+        padding: 2px;
+        margin: 2px;
+    }
+
+
+
+
+    {/literal}
+
+</style>
+
+
+
+<script type="text/javascript"> {literal}
+
+    var allusers = {/literal}{$allusers_json}{literal};
+
+    var schoolnames = {/literal}{$schools_json}{literal};
+
+    function initUserList() {
+        var holder = $('userlist');
+        var schools = {};
+
+
+        // Render it
+        var partners = new Element('select');
+        new Element('option',{text:'Please choose',value:0}).inject(partners);
+        for(var i = 0, len = allusers.length; i < len; i++) {
+            if(allusers[i]) {
+                var user = allusers[i];
+                new Element('option',{text:user.surname+', '+user.firstname,value:user.id}).inject(partners);
+            }
+
+        }
+
+
+        for(var i = 0, len = allusers.length; i < len; i++) {
+            if(allusers[i]) {
+                var user = allusers[i];
+
+                user.homeschool = user.homeschool==null?0:user.homeschool;
+
+                if(schools[user.homeschool]) {
+                    var schoolholder = schools[user.homeschool];
+                } else {
+                    var schoolholder = new Element('div',{'class':'school'}).inject(holder);
+                    var schoolname = schoolnames[user.homeschool]?schoolnames[user.homeschool].title:'No "home school" specified';
+                    new Element('h3',{text:schoolname}).inject(schoolholder);
+                    schools[user.homeschool] = schoolholder;
+                }
+        
+                var div = new Element('div',{'class':'user'}).inject(schoolholder);
+                div.store('user',user);
+
+                allusers[i].div = div;
+        
+                new Element('div',{'class':'fl label',text:'Loginname:'}).inject(div);
+                new Element('div',{'class':'bold fl label',text:user.name}).inject(div);
+                new Element('div',{'class':'fl label',text:'Partner:'}).inject(div);
+                var selectholder = new Element('div',{'class':'fl biglabel'}).inject(div);
+                var select = partners.clone(1);
+                selectholder.appendChild(select);
+                if(user.partnerid) {
+                    for(var x = 0; x < select.options.length; x++) {
+                        if(select.options[x].value == user.partnerid) {
+                            select.options[x].selected = true;
+                            break;
+                        }
+                    }
+                }
+                select.addEvent('change',connectPartners);
+                new Element('div',{'class':'fl biglabel jslink',text:'Delete this user'}).inject(div).addEvent('click',deleteUser);
+                new Element('br',{'class':'cl'}).inject(div);
+
+                new Element('div',{'class':'fl label',text:'Surname:'}).inject(div);
+                new Element('div',{'class':'bold fl label',text:user.surname}).inject(div);
+                new Element('div',{'class':'fl label',text:'Status:'}).inject(div);
+                if(user.status==2) {
+                    new Element('div',{'class':'bold fl biglabel jslink',style:'color:Green',text:'Activated'}).inject(div).addEvent('click',viewProfile);
+                } else if(user.status==1) {
+                    new Element('div',{'class':'bold fl biglabel jslink',style:'color:Yellow',text:'Waiting for approval'}).inject(div).addEvent('click',viewProfile);
+                } else {
+                    new Element('div',{'class':'bold fl biglabel jslink',style:'color:lightcoral',text:'Not finished'}).inject(div).addEvent('click',viewProfile);
+                }
+
+
+                new Element('div',{'class':'fl biglabel jslink',text:'View Profile'}).inject(div).addEvent('click',viewProfile);
+                new Element('br',{'class':'cl'}).inject(div);
+
+                new Element('div',{'class':'fl label',text:'Firstname:'}).inject(div);
+                new Element('div',{'class':'bold fl label',text:user.firstname}).inject(div);
+                new Element('div',{'class':'fl label',text:'Last login:'}).inject(div);
+                new Element('div',{'class':'bold fl biglabel',text:user.lastlogin?user.lastlogin:'No login yet'}).inject(div);
+                new Element('div',{'class':'fl biglabel jslink',text:'Show/Change password'}).inject(div).addEvent('click',passwordActions);
+                new Element('br',{'class':'cl'}).inject(div);
+
+            }
+        }
+
+    }
+
+
+    function deleteUser(ev) {
+        var user = $(this.parentNode).retrieve('user');
+
+        var doit = confirm('Do you want to delete the following user:\n'+user.surname+', '+user.firstname+'\n\nNote:\nYou cannot undo this action!');
+        if(doit) {
+
+            var jsonRequest = new Request.JSON({
+                url: (baseurl?baseurl:'') + 'json.php',
+                onSuccess: function(obj){
+
+                    if(obj.result > 0) {
+                        // Show hint
+                        var hint = new Element('div',{'class':'hint',text:'Successfully deleted user'}).inject($('content'),'top');
+                        fadeError(hint);
+
+                        // reconnect partners
+                        for(var i = 0, len = allusers.length; i < len; i++) {
+                            if(allusers[i].id == user.id) {
+                                allusers[i] = null;
+                            }
+
+                        }
+
+                        $('userlist').empty();
+                        initUserList();
+
+                    } else {
+                        new Element('div',{'class':'error',text:'Unexptected Error: deleteUser#'+obj.result}).inject($('content'),'top');
+                    }
+
+                }
+            }).get({
+                'q': 'deleteUser',
+                'uid':user.id
+            });
+
+
+        } else {
+            alert('Deleting canceled!');
+        }
+
+    }
+
+    function viewProfile(ev) {
+        var link = '{/literal}{$pages.profile.link_get}{literal}'.replace('&amp;','&')+'&uid=';
+        document.location.href = link + $(this.parentNode).retrieve('user').id;
+    }
+
+    function passwordActions(ev) {
+        var user = $(this.parentNode).retrieve('user');
+        var jsonRequest = new Request.JSON({
+            url: (baseurl?baseurl:'') + 'json.php',
+            onSuccess: function(obj){
+                passwordCenter(user,obj.result);
+            }
+        }).get({
+            'q': 'showPassword',
+            'uid':user.id
+        });
+    
+    }
+
+    function passwordCenter(user,result) {
+        var overlay = new Element('div').inject(document.body);
+        overlay.set('styles',{
+            position:'fixed',
+            top:'0px',
+            left:'0px',
+            right:'0px',
+            bottom:'0px',
+            background:'url('+baseurl+'images/33.png)'
+        });
+        overlay.addEvent('click',function(){
+            this.dispose();
+            div.dispose();
+
+        });
+
+        var coords = $(document.body).getCoordinates();
+
+        var div = new Element('div').inject(document.body);
+        div.set('styles',{
+            position:'absolute',
+            minHeight:'200px',
+            minWidth:'400px',
+            left:(coords.width - 400) /2,
+            right:(coords.width - 400) /2,
+            top: $(document.body).getScroll().y+20,
+            background:'White',
+            padding:30,
+            border:'solid 10px #1e466f',
+            MozBorderRadius:'40px',
+            WebkitBorderRadius:'40px',
+            borderRadius:'40px'
+        });
+
+        var h3 = new Element('h3',{text:user.surname+', '+user.firstname+' - '+user.name}).inject(div);
+
+        var fieldset = new Element('fieldset').inject(div);
+
+        var h2 = new Element('h2',{text:'Current Password'}).inject(fieldset);
+        if(result) {
+            var input = new Element('input').inject(fieldset);
+            input.set('type','text');
+            input.set('value',result);
+
+        } else {
+            fieldset.appendChild(document.createTextNode('The current password was saved as a secure hash value, you cannot view the original clear text password.'));
+            var input = new Element('br').inject(fieldset );
+            fieldset.appendChild(document.createTextNode('If the password was lost, you might want to change it below.'));
+        }
+
+
+        var fieldset = new Element('fieldset').inject(div);
+
+        var h2 = new Element('h2',{text:'New Password'}).inject(fieldset );
+
+        var input = new Element('br').inject(fieldset );
+
+        fieldset.appendChild(document.createTextNode('Enter a new password: '));
+
+        var input = new Element('input').inject(fieldset);
+        input.set('type','text');
+        input.set('value','');
+        input.set('id','newpasswordinput');
+
+        var input = new Element('br').inject(fieldset );
+        var input = new Element('br').inject(fieldset );
+
+        var input = new Element('input').inject(fieldset);
+        input.set('type','checkbox');
+        input.set('checked','checked');
+        input.set('id','plaintextinput');
+
+        fieldset.appendChild(document.createTextNode(' If this checkbox is ticked you can view the password later. If you uncheck it, the password will be saved as a secure hash (recommended).'));
+
+        var input = new Element('br').inject(fieldset );
+        var input = new Element('br').inject(fieldset );
+        
+        var input = new Element('input').inject(fieldset );
+        input.set('type','button');
+        input.set('value','Change password');
+        input.addEvent('click',function() {
+            var jsonRequest = new Request.JSON({
+                url: (baseurl?baseurl:'') + 'json.php',
+                onSuccess: function(obj){
+                    if(obj.result > 0) {
+                        overlay.dispose();
+                        div.dispose();
+                        // Show hint
+                        var hint = new Element('div',{'class':'hint',text:'Successfully changed password'}).inject($('content'),'top');
+                        fadeError(hint);
+                    } else {
+                        new Element('div',{'class':'error',text:'Unexptected Error: passwordCenter#'+obj.result}).inject($('content'),'top');
+                    }
+                
+                }
+            }).get({
+                'q': 'changePassword',
+                'uid':user.id,
+                'password':$('newpasswordinput').value,
+                'plaintext':$('plaintextinput').checked?1:0
+            });
+
+
+
+        });
+
+    }
+
+
+    function connectPartners(ev) {
+        var partnerid = parseInt(this.options[this.selectedIndex].get('value'));
+
+        var user = $(this.parentNode.parentNode).retrieve('user');
+
+        var jsonRequest = new Request.JSON({
+            url: (baseurl?baseurl:'') + 'json.php',
+            onSuccess: function(obj){
+
+                if(obj.result > 0) {
+                    // Show hint
+                    var hint = new Element('div',{'class':'hint',text:'Successfully changed partner'}).inject($('content'),'top');
+                    fadeError(hint);
+
+                    // reconnect partners
+                    for(var i = 0, len = allusers.length; i < len; i++) {
+                        if(obj.result == 1) {
+                            if(allusers[i].id == user.id) {
+                                allusers[i].partnerid = 0;
+                            }
+                            if(allusers[i].partnerid == user.id) {
+                                allusers[i].partnerid = 0;
+                            }
+                        } else if(obj.result == 2) {
+     
+                            if(allusers[i].partnerid == user.id) {
+                                allusers[i].partnerid = 0;
+                            }
+                            if(allusers[i].partnerid == partnerid) {
+                                allusers[i].partnerid = 0;
+                            }
+
+                            if(allusers[i].id == user.id) {
+                                allusers[i].partnerid = partnerid;
+                            }
+                            if(allusers[i].id == partnerid) {
+                                allusers[i].partnerid = user.id;
+                            }
+
+                        }
+                    }
+
+            
+                    $('userlist').empty();
+                    initUserList();
+
+                } else {
+                    new Element('div',{
+                        'class':'error',
+                        text:'Unexptected Error: connectPartners#'+obj.result
+                    }
+                ).inject($('content'),'top').grab(new Element('br')).grab(new Element('span',{
+                        'class':'jslink',
+                        'text':'Try reload page',
+                        'events':{
+                            'click':function() { document.location.reload(); }
+                        }
+                    }));
+                }
+
+
+            }
+        }).get({
+            'q': 'connectPartners',
+            'ids':user.id+','+partnerid
+        });
+
+    }
+
+
+
+    window.addEvent('domready', function() {
+
+        initUserList();
+
+
+    });
+    {/literal}</script>
+
+
+<div style="text-align:center;">
+    <img src="{$baseurl}images/icons/users.png" alt=""  class="pageimage" />
+</div>
+
+<br />
+<br />
+
+<h2>Students:</h2>
+
+<div id="userlist">
+
+
+
+</div>
+
+<br />
+<br />
+<h2>Passwords:</h2>
+
+<a href="{$pages.usermanager.link_get}do=show_passwords">Show passwords</a>
+{if $userpasswords}
+<div style="padding:5px; border:2px Black Solid; background:White; color:Black; max-height:500px; overflow:auto;">
+    Administrators are not listed.
+
+    <table border="1" id="members_table">
+        {foreach item=member from=$userpasswords}
+        <tr>
+            <td>Name:</td>
+            <td>&#8199; {$member.surname}, {$member.firstname}</td>
+        </tr>
+        <tr>
+            <td>Loginname:</td>
+            <td>&#8199; {$member.name}</td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td>&#8199; {if $member.plaintextpassword}{$member.plaintextpassword}{else}Clear text password does not exist.{/if}</td>
+        </tr>
+        <tr>
+            <td colspan="2">&#8199; {$shortindex}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><hr /></td>
+        </tr>
+        {/foreach}
+
+
+    </table>
+    That's it
+
+</div>
+{/if}
+
+
+<br />
+<br />
+<h2>Add Students:</h2>
+
+<form action="{$pages.usermanager.link}" method="post">
+    <div id="addusers">
+
+        Home school:
+        <select name="home_school">
+            <option value="0">Please choose</option>
+            {foreach item=school from=$schools}
+            <option value="{$school.id}">{$school.title}</option>
+            {/foreach}
+        </select>
+
+        <br />
+        <br />
+
+        Format:
+        <select name="data_format">
+            <option value="surname_firstname">Name, Vorname</option>
+            <option value="firstname_surname">Vorname, Nachname</option>
+        </select>
+
+        <br />
+        <br />
+
+        Each line a student:
+        <br />
+        <textarea name="data" cols="100" rows="10">{$smarty.post.data|escape}</textarea>
+
+        <br />
+        <br />
+
+        <input type="submit" name="addstudents" value="Save" />
+    </div>
+</form>
+

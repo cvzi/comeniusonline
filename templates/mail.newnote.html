@@ -1,0 +1,213 @@
+{**
+* templates/mail.newnote.html
+*
+*       comeniusonline
+*
+*  comeniusonline is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  comeniusonline is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with comeniusonline; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*  For questions contact
+*  cuzi@openmail.cc
+*
+* @copyright 2011 cuzi
+* @author cuzi
+* @package comeniusonline
+* @version 1.06
+* @license http://gnu.org/copyleft/gpl.html GNU GPL
+*}
+{if $html}
+{assign var='htmlheader' value=true}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Comenius: A teacher left a comment</title>
+
+<style type="text/css">
+    {literal}
+strong{
+	font-variant: small-caps;
+	text-transform: lowercase;
+	color:#949494;
+}
+    {/literal}
+</style>
+
+</head>
+
+<body marginheight="0" topmargin="0" marginwidth="0" leftmargin="0" style="margin: 0px; background-color: #FFFFFF; font-family: Helvetica, Arial, sans-serif;">
+<!--100% body table-->
+<table cellspacing="0" border="0" bgcolor="#ffffff" style="margin: 0; padding: 0; border: 0;" width="100%" cellpadding="0">
+  <tr style="margin: 0; padding: 0; border: 0;">
+    <td align="center" style="margin: 0; padding: 0; border: 0;">
+    <!--email container-->
+    	<table cellspacing="0" border="0" style="padding: 0; border: 0; margin: 0; background: url({$baseurl}images/email/bg.jpg);" bgcolor="#797979" width="805" cellpadding="0">
+    		<tr height="76" style="margin: 0; padding: 0; border: 0;">
+    			<td style="padding: 0; border: 0; margin: 0; background: #797979 url({$baseurl}images/email/top-1.jpg);" width="102">
+    			</td>
+    			<td style="padding: 0; border: 0; margin: 0; background: #797979 url({$baseurl}images/email/top-2.jpg);" width="601">
+    				<table cellspacing="0" border="0" style="margin: 0; padding: 0; border: 0;" cellpadding="0">
+						<tr height="30" style="margin: 0; padding: 0; border: 0;">
+							<td style="margin: 0; padding: 0; border: 0;" width="46"></td>
+							<td style="margin: 0; padding: 0; border: 0;" width="508"></td>
+							<td style="margin: 0; padding: 0; border: 0;" width="47"></td>
+						</tr>
+						<tr style="margin: 0; padding: 0; border: 0;">
+							<td height="50" style="margin: 0; padding: 0; border: 0;"></td>
+							<td align="center" style="padding: 0; font-size: 12px; line-height: 16px; border: 0; color: #EDEDED; margin: 0; font-famiy:Helvetica,Arial,sans-serif">
+						<font face="Helvetica">You're receiving this email because a teacher left a comment on your profile on <a style="color: #fff; text-decoration: underline;" href="{$baseurl}">{$baseurl}</a>. {if $viewonline}Having trouble viewing this email? <a href="{$viewonline}">View it in your browser.</a>{/if}</font>
+							</td>
+							<td style="margin: 0; padding: 0; border: 0;"></td>
+						</tr>
+						<tr height="18" style="margin: 0; padding: 0; border: 0;"><td style="margin: 0; padding: 0; border: 0;"></td><td style="margin: 0; padding: 0; border: 0;"></td><td style="margin: 0; padding: 0; border: 0;"></td></tr>
+					</table>
+    			</td>
+    			<td style="padding: 0; border: 0; margin: 0; background: #797979 url({$baseurl}images/email/top-3.jpg);" width="102">
+    			</td>
+    		</tr>
+    		<tr height="67" style="margin: 0; padding: 0; border: 0;">
+    			<td style="margin: 0; padding: 0; border: 0;">
+    			</td>
+    			<td style="border: 0; padding: 0; color: #f9f9f9; margin: 0; background: #B9B9B9 url({$baseurl}images/email/header.jpg) no-repeat;" bgcolor="#B9B9B9" width="601"><div style="height:67px;">
+    				<table cellspacing="0" border="0" style="margin: 0; padding: 0; border: 0;" cellpadding="0" align="left">
+    					<tr style="margin: 0; padding: 0; border: 0;">
+    						<td style="margin: 0; padding: 0; border: 0;" width="452"><table cellspacing="0" border="0" style="margin: 0; padding: 0; border: 0;" cellpadding="0">
+    							<tr height="55" style="margin: 0; padding: 0; border: 0;">
+    								<td style="margin: 0; padding: 0; border: 0;" width="30"></td>
+    								<td style="margin: 0; padding: 0; border: 0;" align="left" width="422"><h1 style="padding: 13px 0 0 0; margin: 0; font-size: 38px; font-weight: bold; border: 0; color:#f9f9f9; font:Helvetica; font-family:Helvetica, sans-serif">Comenius Online</h1></td>
+    								</tr>
+    							<tr height="12" style="margin: 0; padding: 0; border: 0;">
+    								<td style="margin: 0; padding: 0; border: 0;"></td>
+    								<td style="margin: 0; padding: 0; border: 0;"></td>
+    								</tr>
+    							</table></td>
+    						<td style="margin: 0; padding: 0; border: 0;" width="150"><table cellspacing="0" border="0" style="margin: 0; padding: 0; border: 0;" cellpadding="0">
+    							<tr style="margin: 0; padding: 0; border: 0;">
+    								<td style="margin: 0; padding: 0; border: 0;" width="20" rowspan="2" align="left"><img src="{$baseurl}images/email/star.png" height="67" width="14" style="display: inline;" /></td>
+    								<td style="margin: 0; padding: 0; border: 0;" width="120"></td>
+    								</tr>
+    							<tr>
+    								<td valign="top">
+
+									<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td height="34"></td>
+	</tr>
+</table>
+									<p style="padding: 0; font-size: 10px; font-family:Helvetica, Arial, sans-serif; text-transform: uppercase; border: 0; margin: 0; color:#f9f9f9;">
+									{$smarty.now|date_format:"%H:%M  - %A, %B %e, %Y"}
+									</p>
+
+
+									</td>
+    								</tr>
+    							</table></td>
+    						</tr>
+    					</table>
+    				</div></td>
+    			<td style="margin: 0; padding: 0; border: 0;">
+    			</td>
+    		</tr>
+    		<tr style="padding: 0; font-size: 14px; line-height: 21px; font-family: Arial, sans-serif; border: 0; color: #8e8e8e; margin: 0;">
+    			<td style="margin: 0; padding: 0; border: 0;">
+    			</td>
+    			<td style="padding: 0; border: 0; margin: 0; background: #E4E4E4 url({$baseurl}images/email/bodybg.jpg);" bgcolor="#E4E4E4" width="601">
+
+    			<table cellspacing="0" border="0" style="margin: 0; padding: 0; border: 0;" cellpadding="0" align="left">
+					<tr height="20" style="margin: 0; padding: 0; border: 0;">
+						<td style="margin: 0; padding: 0; border: 0;" width="32"></td>
+						<td style="margin: 0; padding: 0; border: 0;"></td>
+						<td style="margin: 0; padding: 0; border: 0;" width="32"></td>
+					</tr>
+					<tr style="margin: 0; padding: 0; border: 0;">
+						<td style="margin: 0; padding: 0; border: 0;"></td>
+						<td style="margin: 0; padding: 0; border: 0; color:#8E8E8E; font-family: Helvetica, Arial, sans-serif; font-size:14px; line-height:21px;" align="left">
+							<table cellspacing="0" border="0" style="margin: 0; padding: 0; border: 0;" cellpadding="0" align="left">
+								<tr style="margin: 0; padding: 0; border: 0;" height="50">
+									<td style="margin: 0; padding: 0; border: 0;" width="25">
+										<img src="{$baseurl}images/email/arrow.jpg" height="20" width="16" style="display: inline;" />
+									</td>
+									<td style="margin: 0; padding: 0; border: 0;" width="576">
+										<h2 style="font-size: 24px; font-weight: bold; border: 0; color: #767676; display: inline; padding: 0; margin: 0; font-family: Helvetica, Arial, sans-serif">A teacher left a comment on your comenius profile:</h2>
+									</td>
+								</tr>
+								<tr style="margin: 0; padding: 0; border: 0;">
+									<td colspan="2" style="margin: 0; padding: 0; border: 0;">
+										<p style="margin: 0; padding: 0; font-size: 12px; padding-bottom: 10px; font-family: Helvetica, Arial, sans-serif; color:#949494">Please login and check your profile online: <a href="{$baseurl}">{$baseurl}</a></p>
+										<p style="margin: 0; padding: 0; font-size: 12px; padding-bottom: 10px; font-family: Helvetica, Arial, sans-serif; color:#949494">Text of the comment:<p>{$notetext}</p></p>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td style="margin: 0; padding: 0; border: 0;"></td>
+					</tr>
+					<tr height="25" style="margin: 0; padding: 0; border: 0;">
+						<td style="margin: 0; padding: 0; border: 0;"></td>
+						<td style="margin: 0; padding: 0; border: 0;"></td><td style="margin: 0; padding: 0; border: 0;"></td>
+					</tr>
+
+			</table>
+
+    			</td>
+    			<td style="margin: 0; padding: 0; border: 0;">
+    			</td>
+    		</tr>
+    		<tr height="69" style="margin: 0; padding: 0; border: 0;">
+    			<td style="margin: 0; padding: 0; border: 0;">
+    			</td>
+    			<td style="padding: 0; border: 0; margin: 0; background: #B9B9B9 url({$baseurl}images/email/footer.jpg);" bgcolor="#B9B9B9" width="601"><table cellspacing="0" border="0" style="padding: 0; border: 0; margin: 0;" cellpadding="0" width="601">
+				<tr height="12" style="margin: 0; padding: 0; border: 0;"><td style="margin: 0; padding: 0; border: 0;" width="85"></td><td style="margin: 0; padding: 0; border: 0;"></td><td style="margin: 0; padding: 0; border: 0;" width="85"></td></tr>
+				<tr height="40" style="margin: 0; padding: 0; border: 0;">
+					<td style="margin: 0; padding: 0; border: 0;"></td>
+					<td align="center" style="padding: 0; font-size: 12px; line-height: 22px; border: 0; color: #eeeeee; margin: 0; font-family:Helvetica,Arial,sans-serif"><a style="color: #fff; text-decoration: underline;" href="{$baseurl}">{$baseurl}</a> - {$from}
+										</td>
+					<td style="margin: 0; padding: 0; border: 0;"></td>
+				</tr>
+				<tr height="12" style="margin: 0; padding: 0; border: 0;"><td style="margin: 0; padding: 0; border: 0;"></td><td style="margin: 0; padding: 0; border: 0;"></td><td style="margin: 0; padding: 0; border: 0;"></td></tr>
+			</table>
+    			</td>
+    			<td style="margin: 0; padding: 0; border: 0;">
+    			</td>
+    		</tr>
+    		<tr height="90" style="margin: 0; padding: 0; border: 0;">
+    			<td style="padding: 0; border: 0; margin: 0; background: #797979 url({$baseurl}images/email/bottom-1.jpg);">
+    			</td>
+    			<td style="padding: 0; border: 0; margin: 0; background: #797979 url({$baseurl}images/email/bottom-2.jpg);" width="601">
+    			</td>
+    			<td style="padding: 0; border: 0; margin: 0; background: #797979 url({$baseurl}images/email/bottom-3.jpg);">
+    			</td>
+    		</tr>
+    	</table>
+	</td>
+  </tr>
+</table>
+
+</body></html>
+{else}
+{$smarty.now|date_format:"%H:%M  - %A, %B %e, %Y"}
+
+You're receiving this email because a teacher left a comment on your profile on {$baseurl}
+
+Comenius Online
+---------------
+
+Please login and check your profile online: {$baseurl}
+
+Text of the comment:
+{$notetext}
+
+
+{if $viewonline}Having trouble viewing this email? View it in your browser:
+{$viewonline}{/if}
+{/if}

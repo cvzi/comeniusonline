@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ *  THIS FILE MUST BE ENCODED IN UTF-8 FORMAT/ECODING.
+ *  THIS FILE MUST CONTAIN SYNTACTICALLY CORRECT XML 1.0 WITH EXPLICIT "END" TAGS.
+ *
+ * comenius.xml
+ *
+ *       comeniusonline
+ *
+ *  comeniusonline is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  comeniusonline is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with comeniusonline; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *  For questions contact
+ *  cuzi@openmail.cc
+ *
+ * @copyright 2011 cuzi
+ * @author cuzi cuzi@openmail.cc
+ * @package comeniusonline
+ * @version 1.06
+ * @license http://gnu.org/copyleft/gpl.html GNU GPL
+ *
+-->
+
+<root>
+
+<!-- MySQL Database Specification
+
+If you change the IDs of subjects, the database information will be corrupted
+
+-->
+
+<!-- Table: profile -->
+    <countries>
+        <subject id="1" intdialingcode="31">Netherlands</subject>
+        <subject id="2" intdialingcode="32">Belgium</subject>
+        <subject id="3" intdialingcode="33">France</subject>
+        <subject id="4" intdialingcode="36">Hungary</subject>
+        <subject id="5" intdialingcode="39">Italy</subject>
+        <subject id="6" intdialingcode="48">Poland</subject>
+        <subject id="7" intdialingcode="49">Germany</subject>
+    </countries>
+
+    <schools>
+        <subject id="1">Aalten</subject>
+        <subject id="2">Brugge</subject>
+        <subject id="3">Gr-Synthe</subject>
+        <subject id="4">Halasztelek</subject>
+        <subject id="5">Hondschoote</subject>
+        <subject id="6">Osterburken</subject>
+        <subject id="7">Padua</subject>
+        <subject id="8">Paks</subject>
+        <subject id="9">Piove di Sacco</subject>
+        <subject id="10">Swidnik</subject>
+    </schools>
+
+
+<!-- Table: profile_favourite_lessons -->
+    <lessons>
+        <subject id="1">Arts (Music, visual arts)</subject>
+        <subject id="2">Foreign languages</subject>
+        <subject id="3">Maths</subject>
+        <subject id="4">Native language</subject>
+        <subject id="5">Science (Physics/Biology/Chemistry)</subject>
+        <subject id="6">Sport</subject>
+        <subject id="7">Technics</subject>
+
+    </lessons>
+
+<!-- Table: profile_hobbies -->
+    <hobbies>
+        <subject id="1">Reading</subject>
+        <subject id="2">Going to movies</subject>
+        <subject id="3">Fishing</subject>
+        <subject id="4">Hunting</subject>
+        <subject id="5">Computer</subject>
+        <subject id="6">Football/Soccer</subject>
+        <subject id="6">Sport</subject>
+        <subject id="7">Playing music</subject>
+        <subject id="8">Volunteer work</subject>
+        <subject id="9">Photography</subject>
+        <subject id="10">Board games</subject>
+    </hobbies>
+
+<!-- Table: profile_special -->
+    <special>
+        <subject id="1">Meals</subject>
+        <subject id="2">Allergies</subject>
+        <subject id="3">Diseases</subject>
+        <subject id="4">Medical Treatment</subject>
+        <subject id="5">Other</subject>
+    </special>
+
+</root>

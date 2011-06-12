@@ -1,0 +1,571 @@
+{**
+* templates/myprofile.html
+*
+*       comeniusonline
+*
+*  comeniusonline is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  comeniusonline is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with comeniusonline; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*  For questions contact
+*  cuzi@openmail.cc
+*
+* @copyright 2011 cuzi
+* @author cuzi
+* @package comeniusonline
+* @version 1.06
+* @license http://gnu.org/copyleft/gpl.html GNU GPL
+*}
+
+
+<script type="text/javascript"> {literal}
+
+
+    function loadNotes(noteslist,teacher) {
+        for(var i = 0; i < noteslist.length; i++) {
+            var note = noteslist[i];
+            if($(note.position)) {
+                showANote(note,teacher);
+                if($(note.position).tagName.toLowerCase() == 'tr' && $(note.position).getElements('td')) {
+                    $(note.position).getElements('td').set('class','yellow');
+                }
+            }
+
+        }
+
+       
+    }
+    function showANote(note,teacher) {
+        var dim = $(note.position).getCoordinates();
+        var top = dim.top;
+        var left = dim.left+dim.width-10;
+        var div = new Element('div',{'class':'note',styles:{top:top,left:left}}).inject(document.body);
+        var p = new Element('p',{text:note.text}).inject(div);
+        if(teacher) {
+            var close = new Element('img',{src:baseurl+'images/icons/delete.png',styles:{display:'block',position:'absolute',top:0,right:0}}).inject(div);
+            close.addEvent('click',deleteNote);
+            close.store('noteid',note.id);
+        }
+    }
+
+
+    function deleteNote() {
+        var really = confirm('Do you really want to delete that note?');
+        if(!really) {
+            return false;
+        }
+
+        var note = this.parentNode;
+        var jsonRequest = new Request.JSON({
+            url: (baseurl?baseurl:'') + 'json.php',
+            onSuccess: function(obj){
+                if(obj.result > 0) {
+                    // Show hint
+                    var hint = new Element('div',{'class':'hint',text:'Successfully deleted the note'}).inject($('content'),'top');
+                    fadeError(hint,6000);
+                    note.destroy();
+                } else {
+                    new Element('div',{'class':'error',text:'Unexptected Error: deleteNote#'+obj.result}).inject($('content'),'top');
+                }
+
+            }
+        }).get({
+            'q': 'deleteNote',
+            'id':this.retrieve('noteid')
+        });
+
+    }
+
+
+    function leaveANoteCenter(user,result) {
+
+        var coords = $(document.body).getCoordinates();
+        var table_coords = $$('.features-table')[0].getCoordinates();
+
+        var right = coords.width - table_coords.width - table_coords.left;
+        right = right / 5 * 4;
+
+        var div = new Element('div').inject(document.body);
+        div.set('class','note notecenter');
+        div.set('styles',{
+            position:'absolute',
+            minHeight:'200px',
+            minWidth:'200px',
+            right:right,
+            top: 0,
+            padding:30,
+            border:'10px solid khaki',
+            MozBorderRadius:'40px',
+            WebkitBorderRadius:'40px',
+            borderRadius:'40px'
+        });
+
+
+        // Handle
+        var h3 = new Element('h3',{text:'New note at ',styles:{cursor:'move'}}).inject(div);
+        
+        // Drag Preview
+        div.set('tween', {
+            duration: '700ms',
+            transition: 'linear',
+            link: 'cancel'
+        });
+        div.tween('top', $(document.body).getScroll().y+20);
+        var godown = function() {
+            div.tween('top', $(document.body).getScroll().y+300);
+        };
+        var goback = function() {
+            div.tween('top', $$('.features-table')[0].getCoordinates().top-20);
+            textarea.focus();
+        };
+
+        godown.delay(700);
+        goback.delay(1400);
+
+
+        // Drag
+        var myDragInstance = new Drag.Move(div,{
+            modifiers : {'y': 'top','x' : null},
+            preventDefault : false,
+            droppables : $$('.features-table tr[id]'),
+            precalculate : true,
+            handle : h3,
+            onEnter: function(draggable, droppable){
+                droppable.getElements('td').set('class', 'hover');
+                currentElementDisp.set('text','"'+droppable.getElements('td')[0].get('text')+'"');
+                draggable.store('current_aim',droppable.get('id'))
+            },
+
+            onLeave: function(draggable, droppable){
+                droppable.getElements('td').set('class', '');
+            }
+
+
+        });
+
+        // Content
+        var currentElementDisp = new Element('span',{text:'"Grab here"',id:'currentElementDisp'}).inject(h3);
+
+        var textarea = new Element('textarea').inject(div);
+        textarea.set('styles',{
+            width:'100%',
+            background:'none',
+            border:'1px solid Black',
+            MozBorderRadius:'0px',
+            WebkitBorderRadius:'0px',
+            borderRadius:'0px'
+        });
+        textarea.set('rows','5');
+        textarea.set('id','newnotetext');
+
+        new Element('br').inject(div);
+        new Element('br').inject(div);
+
+        var input = new Element('input').inject(div);
+        input.set('type','button');
+        input.set('value','Save');
+        input.addEvent('click',function() {
+            var notecenter = this.getParent('div.notecenter');
+            var current_aim = notecenter.retrieve('current_aim');
+            if(!current_aim) {
+                alert('Please grab the note box and drag/drop it over the table!');
+                return;
+            }
+            var text = notecenter.getElement('textarea').get('value');
+            if(!text) {
+                alert('Please enter text!');
+                return;
+            }
+            
+            var uid = document.location.href.match(/uid=(\d+)/)[1];
+            if(!uid) {
+                alert('Unexpected Error\nPlease try again later!\n\nNo uid found!');
+                return;                              
+            }
+
+            var jsonRequest = new Request.JSON({
+                url: (baseurl?baseurl:'') + 'json.php',
+                onSuccess: function(obj){
+                    if(obj.result > 0) {
+                        notecenter.dispose();
+                        // Show hint
+                        var hint = new Element('div',{'class':'hint',text:'Successfully added the note'}).inject($('content'),'top');
+                        fadeError(hint,6000);
+                        // Show Note
+                        showANote({'position':current_aim, 'text':text, 'id':obj.noteid},true);
+                        if($(current_aim).tagName.toLowerCase() == 'tr' && $(current_aim).getElements('td')) {
+                            $(current_aim).getElements('td').set('class','yellow');
+                        }
+                        if(obj.result > 1) {
+                            // Show email hint
+                            var hint2 = new Element('div',{'class':'hint',text:'Successfully send a email notification'}).inject($('content'),'top');
+                            fadeError(hint2,6000);
+                        }
+
+                    } else {
+                        new Element('div',{'class':'error',text:'Unexptected Error: leaveANoteCenter#'+obj.result}).inject($('content'),'top');
+                    }
+
+                }
+            }).get({
+                'q': 'saveNote',
+                'uid':uid,
+                'text':text,
+                'position':current_aim
+            });
+
+
+
+        });
+
+    }
+
+    var notes = {/literal}{if $notes_json}{$notes_json}{else}[]{/if}{literal};
+
+    window.addEvent('domready', function() {
+
+        if($('leaveanote_link')) {
+            $('leaveanote_link').addEvent('click',leaveANoteCenter);
+
+            loadNotes(notes,true);
+        } else {
+            // If normal user
+        }
+
+
+
+    });
+    {/literal}</script>
+
+
+
+
+
+<div style="text-align:center;">
+    <img src="{$baseurl}images/icons/user-admin.png" alt=""  class="pageimage" />
+</div>
+
+<br />
+<br />
+
+
+{if $allusers}
+<h2>
+    Select a user
+</h2>
+
+<div>
+    <form action="{$pages.profile.link}" method="get">
+        <p>
+            <input type="hidden" name="q" value="profile" />
+            <select name="uid" onchange="this.parentNode.parentNode.submit();">
+                <option value="0">Please choose</option>
+                {foreach item=user from=$allusers}
+                <option value="{$user.id}" {if $user.id == $smarty.get.uid}selected="selected" {/if}>{$user.surname}, {$user.firstname} ({$user.name})</option>
+                {/foreach}
+            </select>
+        </p>
+    </form>
+
+    <br />
+</div>
+
+
+
+{else}
+<h2>
+    Your Partner
+</h2>
+
+
+<h1>Europe on the Move</h1>
+<h1>Questionnaire</h1>
+
+<h2>Let me present myself</h2>
+
+
+{/if}
+
+{if $myprofile}
+
+{if $unchangeable}
+<p>
+    You have handed your profile in and a teacher approved it. Therefore you cannot change it anymore.
+</p>
+{/if}
+
+
+{if $myprofile->field.status == 0 and $allusers}
+<h3>This profile is not marked completed, still you can approve it now.</h3>
+
+<a href="{$pages.usermanager.link_get}do=approve&amp;uid={$myprofile->field.uid}">Approve this profile and publish it to the partner</a>
+
+<h3>If you want the student to change some information in this profile you may add a note:</h3>
+
+<span class="jslink" id="leaveanote_link">Leave a note</span>
+
+<br />
+<br />
+{/if}
+
+
+{if $myprofile->field.status == 1 and $allusers}
+<h3>This profile was marked as completed by the student. You can now review it and approve it.</h3>
+
+<a href="{$pages.usermanager.link_get}do=approve&amp;uid={$myprofile->field.uid}">Approve this profile and publish it to the exchange student</a>
+
+<h3>If you want the student to change some information in this profile you may add a note:</h3>
+
+<span class="jslink" id="leaveanote_link">Leave a note</span>
+
+<br />
+<br />
+{/if}
+
+
+{if $myprofile->field.status == 2 and $allusers}
+<h3>This profile is activated, so the exchange student can see it. The student cannot change any information in his profile as long as it is activated. </h3>
+
+<a href="{$pages.usermanager.link_get}do=deactivate&amp;uid={$myprofile->field.uid}">Deactivate this profile</a>
+<br />
+<br />
+As long as the profile is activated you cannot add notes.
+<br />
+<br />
+{/if}
+
+
+
+<table class="features-table">
+
+    <colgroup>
+        <col width="20%">
+        <col width="70%">
+    </colgroup>
+
+
+
+    <thead>
+        <tr id="tr_field_surname">
+            <td>Name</td>
+            <td>{$myprofile->field.surname|escape}</td>
+        </tr>
+    </thead>
+
+
+
+    <tfoot>
+        <tr id="tr_field_aboutmyfamily">
+            <td><span class="bold">About my family</span></td>
+            <td {if $allusers and not $myprofile->field.aboutmyfamily}class="red"{/if}><span class="italic">{$myprofile->field.aboutmyfamily|escape}</span></td>
+        </tr>
+
+    </tfoot>
+    <tbody>
+
+
+        <tr id="tr_field_firstname">
+            <td>First name</td>
+            <td>{$myprofile->field.firstname|escape}</td>
+        </tr>
+
+        {if $myprofile->field.photo and $allusers}
+        <tr id="tr_field_photo">
+            <td colspan="2"><img style="max-width:600px; max-height:300px;" alt="Profile photo" src="{$baseurl}photo.php?who={$myprofile->field.name}"/></td>
+        </tr>
+        {/if}
+        
+        {if $photo}
+        <tr id="tr_field_photo">
+            <td colspan="2"><img style="max-width:600px; max-height:300px;" alt="Profile photo" src="{$baseurl}photo.php?who={$photo}"/></td>
+        </tr>
+        {/if}
+
+        <tr id="tr_field_sex">
+            <td>Gender</td>
+            <td {if $allusers and not $myprofile->field.sex}class="red"{/if}>{if $myprofile->field.sex == 1}Male{/if}{if $myprofile->field.sex == 2}Female{/if}</td>
+        </tr>
+        <tr id="tr_field_address_street">
+            <td>Street</td>
+            <td {if $allusers and not $myprofile->field.address_street}class="red"{/if}>{$myprofile->field.address_street|escape}</td>
+        </tr>
+        <tr id="tr_field_adress_postcode">
+            <td>Postcode</td>
+            <td {if $allusers and not $myprofile->field.address_postcode}class="red"{/if}>{$myprofile->field.address_postcode|escape}</td>
+        </tr>
+        <tr id="tr_field_address_town">
+            <td>Town</td>
+            <td {if $allusers and not $myprofile->field.address_town}class="red"{/if}>{$myprofile->field.address_town|escape}</td>
+        </tr>
+        <tr id="tr_field_adress_country">
+            <td>Home Country</td>
+            <td {if $allusers and not $myprofile->field.adress_country}class="red"{/if}>{strip}
+                {foreach item=country from=$countries}
+                {if $myprofile->field.adress_country == $country.id}{$country.title}{/if}
+                {/foreach}
+                {/strip}</td>
+        </tr>
+        <tr id="tr_field_homeschool">
+            <td>Home School</td>
+            <td {if $allusers and not $myprofile->field.homeschool}class="red"{/if}>{strip}
+                {foreach item=school from=$schools}
+                {if $myprofile->field.homeschool == $school.id}{$school.title}{/if}
+                {/foreach}
+                {/strip}</td>
+        </tr>
+        <tr id="tr_field_destschool">
+            <td>Destination School</td>
+            <td {if $allusers and not $myprofile->field.destschool}class="red"{/if}>{strip}
+                {foreach item=school from=$schools}
+                {if $myprofile->field.destschool == $school.id}{$school.title}{/if}
+                {/foreach}
+                {/strip}</td>
+        </tr>
+        <tr id="tr_field_phone_number">
+            <td>Phone Number</td>
+            <td {if $allusers and not $myprofile->field.phone_number}class="red"{/if}>{$myprofile->field.phone_number|escape}</td>
+        </tr>
+        <tr id="tr_field_phone_number_mobile">
+            <td>Mobile Phone Number</td>
+            <td>{$myprofile->field.phone_number_mobile|escape}</td>
+        </tr>
+        <tr id="tr_field_email">
+            <td>Email Address</td>
+            <td {if $allusers and not $myprofile->field.email}class="red"{/if}><a href="mailto:{$myprofile->field.email|escape:"url"}">{$myprofile->field.email|escape}</a></td>
+        </tr>
+        <tr id="tr_field_birth">
+            <td>Date of Birth</td>
+            <td {if $allusers and not $myprofile->field.birth}class="red"{/if}>{if $myprofile->field.birth}{$myprofile->field.birth|date_format:"%m/%d/%Y"}{/if}</td>
+        </tr>
+        <tr id="tr_field_favourite_lessons1">
+            <td>Favourite Lesson</td>
+            <td {if $allusers and not $myprofile->field.favourite_lessons[1].subject}class="red"{/if}>{strip}
+                <span class="bold">1st</span>
+                <br />
+                {foreach item=lesson from=$lessons}
+                {if $myprofile->field.favourite_lessons[1].subject == $lesson.id}{$lesson.title}{/if}
+                {/foreach}
+                <br />
+                <span class="italic">{$myprofile->field.favourite_lessons[1].text|escape}</span>
+                {/strip}</td>
+        </tr>
+        <tr id="tr_field_favourite_lessons2">
+            <td>Favourite Lesson</td>
+            <td {if $allusers and not $myprofile->field.favourite_lessons[2].subject}class="red"{/if}>{strip}
+                <span class="bold">2nd</span>
+                <br />
+                {foreach item=lesson from=$lessons}
+                {if $myprofile->field.favourite_lessons[2].subject == $lesson.id}{$lesson.title}{/if}
+                {/foreach}
+
+                <br />
+                <span class="italic">{$myprofile->field.favourite_lessons[2].text|escape}</span>
+                {/strip}</td>
+        </tr>
+        <tr id="tr_field_favourite_lessons3">
+            <td>Favourite Lesson</td>
+            <td {if $allusers and not $myprofile->field.favourite_lessons[3].subject}class="red"{/if}>{strip}
+                <span class="bold">3nd</span>
+                <br />
+                {foreach item=lesson from=$lessons}
+                {if $myprofile->field.favourite_lessons[3].subject == $lesson.id}{$lesson.title}{/if}
+                {/foreach}
+
+                <br />
+                <span class="italic">{$myprofile->field.favourite_lessons[3].text|escape}</span>
+                {/strip}</td>
+        </tr>
+        <tr id="tr_field_hobbies">
+            <td><span class="bold">Hobbies</span>{strip}
+                <br />
+	(three or more specific interests)</td>
+            <td {if $allusers and not $myprofile->field.hobbies[1].subject}class="red"{/if}>
+                <span class="bold">1st</span>
+                <br />
+                {foreach item=hobby from=$hobbies}
+                {if $myprofile->field.hobbies[1].subject == $hobby.id}{$hobby.title}{/if}
+                {/foreach}
+                <br />
+                <br />
+                <span class="bold">2nd</span>
+                <br />
+                {foreach item=hobby from=$hobbies}
+                {if $myprofile->field.hobbies[2].subject == $hobby.id}{$hobby.title}{/if}
+                {/foreach}
+                <br />
+                <br />
+                <span class="bold">3rd</span>
+                <br />
+                {foreach item=hobby from=$hobbies}
+                {if $myprofile->field.hobbies[3].subject == $hobby.id}{$hobby.title}{/if}
+                {/foreach}
+                <br />
+                <br />
+                <span class="bold">More/Others:</span>
+                <br />
+                <span class="italic">{$myprofile->field.hobbies_text|escape}</span>
+                {/strip}</td>
+        </tr>
+
+
+        {assign var=i value=0}
+        {assign var=anyspecial value=0}
+        {foreach item=thing from=$special}
+        {assign var=a value="`$i+1`"}
+        {if $myprofile->field.special[$a].text}
+        {assign var=anyspecial value=1}
+        {/if}
+        {assign var=i value="`$i+1`"}
+        {/foreach}
+
+        {if $anyspecial}
+
+        <tr>
+            <td colspan="2"><span class="bold">Something you should know</span></td>
+        </tr>
+
+        {assign var=i value=0}
+        {foreach item=thing from=$special}
+        {assign var=a value="`$i+1`"}
+        {if $myprofile->field.special[$a].text}
+        <tr id="tr_field_special{$a}">
+            <td>{$thing.title}</td>
+            <td>{strip}
+                {$myprofile->field.special[$a].text|escape}
+                {/strip}</td>
+        </tr>
+        {/if}
+        {assign var=i value="`$i+1`"}
+        {/foreach}
+
+        {else}
+
+        <tr>
+            <td colspan="2"><span class="bold">Something you should know: Nothing</span>
+            </td>
+        </tr>
+
+        {/if}
+
+    </tbody>
+
+</table>
+
+
+<div style="text-align:center;">
+    <img  onclick="printThisPage();" src="{$baseurl}images/icons/printer.png" alt=""  class="pageimage" />
+</div>
+
+
+
+{/if}

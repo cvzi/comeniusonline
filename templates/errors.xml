@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ *
+ * templates/errors.xml
+ *
+ *       comeniusonline
+ *
+ *  comeniusonline is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  comeniusonline is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with comeniusonline; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *  For questions contact
+ *  cuzi@openmail.cc
+ *
+ * @copyright 2011 cuzi
+ * @author cuzi cuzi@openmail.cc
+ * @package comeniusonline
+ * @version 1.06
+ * @license http://gnu.org/copyleft/gpl.html GNU GPL
+ *
+
+-->
+
+<root>
+
+    <string name="NoAccess">No permission to view this site! You may have clicked an expired link.</string>
+    <string name="PageNotFound">The page you are trying to visit does not exist. You may have clicked an expired link or mistyped the address.</string>
+    <string name="SendEmailError">An unexpected error has occurred while trying to send a mail. Error: mail() returned false.</string>
+
+    <string name="LoginFailed">Sorry, wrong username and password combination. Please try again.</string>
+    <string name="LoggedIn">You have successfully logged in.</string>
+    <string name="LoggedOut">You have successfully logged out.</string>
+    <string name="NoEmailFound">You did not enter an emailadress yet, therefore we cannot send your password. Please ask a teacher for your password.</string>
+    <string name="CaptchaWrong">Please solve the math problem again.</string>
+    <string name="NoLoginnameFound">Sorry, we cannot find a registered user with that loginname!</string>
+    <string name="ResetCodeCorrupted">Sorry, your reset link has expired, please try again!</string>
+    <string name="ChangedPassword">You habe successfully changed your password, you may login now.</string>
+    <string name="ChangPasswordFailed">An unexpected database error has occurred while trying to change your password. Please try again.</string>
+
+    <string name="NewUsersWereAdded">You have successfully added new students.</string>
+    <string name="NewUsersFailed">An unexpected database error has occurred while adding new user.</string>
+    <string name="NewUsersWrongSchool">The school that you selected, does not exist. Please try again.</string>
+
+    <string name="ProfileSaved">Your profile has successfully been changed!</string>
+    <string name="ProfileSaveFailed">An unexpected database error has occurred while trying to change/save your profile. Please try again.</string>
+
+    <string name="EmailSaved">Your email has successfully been changed!</string>
+    <string name="EmailSaveFailed">An unexpected database error has occurred while trying to save your email.</string>
+
+    <string name="ProfileHandedIn">Your profile has successfully been handed in and will soon be approved by a teacher!</string>
+    <string name="ProfileHandInFailed">An unexpected database error has occurred while trying to hand in your profile. Please try again.</string>
+
+    <string name="ProfileImageSaved">You uploaded a profile image!</string>
+    <string name="ProfileImageUnexpectedError">An unexpected error has occurred while trying to upload your photo. Please try again.</string>
+    <string name="ProfileImageFormat">Please upload a photo that is converted to one of the following formats: png, jpg or gif</string>
+
+    <string name="ProfileNotFound">The profile that you selected, does not exist. Please try again.</string>
+    <string name="ProfilePartnerNotFound">So far no partner defined.</string>
+    <string name="ProfilePartnerNotApproved">Your partner's profile is waiting to be approved by a teacher.</string>
+
+    <string name="ProfileApproved">You have approved the profile!</string>
+    <string name="ProfileApproveFailed">An unexpected database error has occurred while approving the profile!</string>
+
+    <string name="ProfileDeactivated">You have deactivated the profile!</string>
+    <string name="ProfileDeactivateFailed">An unexpected database error has occurred while deactivating the profile!</string>
+
+    <string name="NewTeacherWasAdded">You have successfully added a new teacher.</string>
+    <string name="NewTeacherFailed">An unexpected database error has occurred while adding a teacher.</string>
+
+    <string name="TeacherWasDeleted">You have successfully deleted a teacher.</string>
+    <string name="TeacherDeleteFailed">An unexpected database error has occurred while deleting a teacher.</string>
+
+    <string name="DatabaseReset">Photo folder and database are empty!</string>
+    <string name="DatabaseResetFailed">An unexpected error has occurred during reset process.</string>
+
+</root>

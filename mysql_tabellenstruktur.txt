@@ -1,0 +1,128 @@
+
+--
+-- Tabellenstruktur für Tabelle `com_notes`
+--
+
+CREATE TABLE IF NOT EXISTS `com_notes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subjectuid` int(11) NOT NULL,
+  `authoruid` int(11) NOT NULL,
+  `time` datetime NOT NULL,
+  `position` varchar(200) COLLATE utf8_unicode_ci NOT NULL COMMENT 'HTML Element #ID',
+  `read` tinyint(1) NOT NULL DEFAULT '0',
+  `done` tinyint(1) NOT NULL DEFAULT '0',
+  `text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `com_user`
+--
+
+CREATE TABLE IF NOT EXISTS `com_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Unique login name',
+  `plaintextpassword` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'sha512 Hash Sum',
+  `group` tinyint(1) NOT NULL DEFAULT '1',
+  `lastlogin` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `partnerid` int(11) DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `partnerid` (`partnerid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=67 ;
+
+-- --------------------------------------------------------
+
+--
+-- Daten für Tabelle `com_user`
+--
+
+INSERT INTO `com_user` (`id`, `name`, `plaintextpassword`, `password`, `group`, `lastlogin`, `partnerid`, `status`) VALUES
+(1, 'admin', NULL, 'ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff', 5, '2011-05-17 20:47:56', NULL, 0),
+(2, 'teacher', NULL, 'ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff', 2, '2011-05-29 13:56:38', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `com_profile`
+--
+
+CREATE TABLE IF NOT EXISTS `com_profile` (
+  `uid` int(11) NOT NULL,
+  `surname` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `firstname` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sex` int(1) DEFAULT NULL COMMENT 'Specification in comenius.xml',
+  `address_street` text COLLATE utf8_unicode_ci,
+  `address_postcode` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address_town` text COLLATE utf8_unicode_ci,
+  `adress_country` int(11) DEFAULT NULL COMMENT 'Specification in comenius.xml',
+  `homeschool` int(11) DEFAULT NULL COMMENT 'Specification in comenius.xml',
+  `destschool` int(11) DEFAULT NULL COMMENT 'Specification in comenius.xml',
+  `destcountry` int(11) DEFAULT NULL COMMENT 'Specification in comenius.xml',
+  `phone_number` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `phone_number_mobile` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `birth` date DEFAULT NULL,
+  `aboutmyfamily` text COLLATE utf8_unicode_ci,
+  `hobbies_text` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Daten für Tabelle `com_profile`
+--
+
+INSERT INTO `com_profile` (`uid`, `surname`, `firstname`, `sex`, `address_street`, `address_postcode`, `address_town`, `adress_country`, `homeschool`, `destschool`, `destcountry`, `phone_number`, `phone_number_mobile`, `email`, `birth`, `aboutmyfamily`, `hobbies_text`) VALUES
+(2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `com_profile_favourite_lessons`
+--
+
+CREATE TABLE IF NOT EXISTS `com_profile_favourite_lessons` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `rank` int(11) NOT NULL DEFAULT '1',
+  `subject` int(11) NOT NULL COMMENT 'Specification in comenius.xm',
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=244 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `com_profile_hobbies`
+--
+
+CREATE TABLE IF NOT EXISTS `com_profile_hobbies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `rank` int(11) NOT NULL DEFAULT '1',
+  `subject` int(11) NOT NULL COMMENT 'Specification in comenius.xm',
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=205 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `com_profile_special`
+--
+
+CREATE TABLE IF NOT EXISTS `com_profile_special` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `rank` int(11) NOT NULL DEFAULT '1',
+  `subject` int(11) NOT NULL COMMENT 'Specification in comenius.xm',
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=58 ;

@@ -1,0 +1,111 @@
+Beim Bearbeiten von Dateien sollte auf die richtige Zeichenkodierung geachtet werden:
+UTF-8 Kodierung ohne BOM
+Bei Windows wird am besten der kostenlose Texteditor "Notepad++" verwendet und die Kodierung bei jeder bearbeiteten Datei über den Menüpunkt "Kodierung" auf "Konvertiere zu UTF-8 ohne BOM" gesetzt.
+Achtung: Weder das Windows Notepad, das Wordpad noch Phase5 können UTF-8 ohne BOM schreiben!
+
+
+config.php
+----------
+
+Verbindungsdaten:
+```
+$MySQLHost = 'localhost';
+$MySQLName = 'root';
+$MySQLPassword = '';
+$MySQLDBName = 'comenius';
+```
+
+Eventuell die Tabellennamen, falls Sie andere Namen wählen möchten:
+```
+$MySQL_tables['user'] = 'com_user';
+$MySQL_tables['profile'] = 'com_profile';
+$MySQL_tables['notes'] = 'com_notes';
+```
+
+navigation.xml
+--------------
+
+Die Internetadresse der Seite (mit Slash am Ende)
+`<base>http://192.168.178.31/comeniusfinal/</base>`
+
+
+Eine Emailadresse an die geantwortet werden kann.
+Sie wird beim Versand von Emails über PHP als Absender angegeben.
+`<adminemail>admin@localhost</adminemail>`
+
+Das Verzeichnis auf dem Server in dem die Website liegt (mit Slash am Ende)
+```
+<path>/xampp/htdocs/comeniusfinal/</path>
+```
+
+Diese beiden Verzeichnisse haben den gleichen Pfad wie oben und zusätzlich templates bzw include (mit Slash am Ende)
+```
+    <templates>/xampp/htdocs/comeniusfinal/templates/</templates>
+    <php>/xampp/htdocs/comeniusfinal/include/</php>
+```
+
+Benutzerfreundliche Adressen:
+
+Statt
+http://testseite.de/index.php?q=profile
+wird
+http://testseite.de/profile/
+benutzt
+
+Um dies zu aktivieren muss der Eintrag
+```
+<htaccess>q</htaccess>
+```
+in der navigation.xml stehen.
+
+Wenn keine benutzerfreundlichen Adressen verwendet werden, muss der Eintrag auskommentiert werden:
+```
+<!-- <htaccess>q</htaccess>-->
+```
+
+Nach dem Ändern der `navigation.xml` muss das Programm `generate_htaccess.php` ausgeführt/aufgerufen werden.
+Dieses Programm erstellt eine `.htaccess` Datei, die den Zugriff auf Dateien blockiert, die der Besucher nicht
+benötigt (z.B. config.php). Außerdem ermöglicht die Datei die benutzerfreundlichen Adressen.
+Falls `generate_htaccess.php` nicht geöffnet werden kann, muss zuerst die bestehende .htaccess manuell geleert werden.
+Eventuell muss die ".htaccess"-Datei auch chmod Schreibrechte (0777) erhalten.
+
+comenius.xml
+------------
+
+Enthält die Daten für die Auswahllisten z.B. Hobbies.
+
+Hinzufügen und Ändern von Einträgen in den Listen ist auch während dem Betrieb der Website ohne Probleme möglich.
+
+Wenn die IDs der Einträge geändert werden, dann stimmen allerdings die Informationen in der Datenbank
+eventuell nicht mehr mit den Eingaben der Besucher überein!
+
+
+MySQL Datenbank
+---------------
+
+Der Name der Datenbank und der Tabellen wurde in der config.php festgelegt.
+
+Die Datenbank und die Tabellen müssen UTF-8 kodiert sein.
+
+Die Tabellenstruktur in [mysql_tabellenstruktur.txt](mysql_tabellenstruktur.txt) enthält die oben angegebenen Tabellennamen.
+Die Datei kann mit dem PHPMyAdmin importiert werden. Vorher sollten allerdings die beiden Passwörter für den Administrator- und den Standardlehreraccount geändert werden!
+
+Das Standardpasswort für die Benutzer "admin" und "teacher" ist "test"
+Die Passwörter sind unten als SHA-512 Hash angegeben.
+
+Eigene SHA-512 Hash Passwörter können z.B. über folgende Seite erstellt werden:
+http://hash.online-convert.com/sha512-generator
+
+
+Unix-Dateizugriffsrechte
+-----------------------
+
+Bei einem Unix Server müssen folgende Verzeichnisse und die enthaltenen Dateien mit chmod Schreibrechte (0777) bekommen:
+ * smarty/templates_c
+ * photos
+
+"Contact Us" Seite
+------------------
+
+Die Datei `templates/about.html` sollte die Kontaktdaten enthalten.
+

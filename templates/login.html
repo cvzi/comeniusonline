@@ -1,0 +1,110 @@
+{**
+* templates/login.html
+*
+*       comeniusonline
+*
+*  comeniusonline is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  comeniusonline is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with comeniusonline; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*  For questions contact
+*  cuzi@openmail.cc
+*
+* @copyright 2011 cuzi
+* @author cuzi
+* @package comeniusonline
+* @version 1.06
+* @license http://gnu.org/copyleft/gpl.html GNU GPL
+*}
+
+{if $user->get('group') < 1}
+
+<div style="text-align:center;"  class="pageimage">
+    <img src="{$baseurl}images/icons/locked.png" alt="Login required" />
+</div>
+
+<h2>Login</h2>
+
+<form action="{$pages.login.link}" method="post" autocomplete="off">
+    <div>
+        <br />
+        <span class="inputdec" id="lname_dec" title=" - Please enter your login name, not your full name">Your login name</span>
+        <input type="text" name="lname" id="lname" value="{$smarty.post.lname|escape}"/>
+        <br />
+        <span class="inputdec" id="lpass_dec" title=" - Enter your password">Your password</span>
+        <input type="password" name="lpass" id="lpass" value="" />
+        <br />
+        <input type="hidden" name="do" value="Login" />
+
+        <a href="#" class="button button-green" style="margin-top:10px" onclick="$(this).getParents('form')[0].submit()">
+          <span>Login</span>
+        </a>
+
+
+        <br />
+        <a href="{$pages.login.link_get}lostpassword=1">Forgot your password?</a>
+    </div>
+</form>
+
+{/if}
+
+<div style="text-align:center;">
+    {if $user->get('group') < 1}
+
+    {else}
+    <img src="{$baseurl}images/icons/home.png" alt="Homepage" />
+
+        {if $emailreminder}
+        <br />
+        <br />
+        <br />
+        <h2>You did not enter an email address yet. Please fill in the form below</h2>
+        <form action="{$pages.myprofile.link}" method="post">
+        <fieldset>
+            <legend>Email address</legend>
+
+            Your email adress: <input type="text" name="email" />
+
+            <br />
+            <br />
+                        <a href="#" class="button button-red" style="margin-top:10px" onclick="$(this).getParents('form')[0].submit()">
+                            <span>Save &amp; Go to my Questionnaire</span>
+                        </a>
+        </fieldset>
+        </form>
+        {else}
+        <br />
+        <br />
+        <br />
+        <p>
+            That's the Homepage
+        </p>
+        <br />
+        <br />
+        <br />
+
+                        <a href="#" class="button button-green" style="margin-top:10px" onclick="document.location.href='{$pages.myprofile.link}'">
+                            <span>My Questionaire</span>
+                        </a>
+        
+
+        {/if}
+
+
+    {/if}
+
+        <br />
+        <br />
+        <br />
+
+</div>

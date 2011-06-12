@@ -1,0 +1,219 @@
+{**
+* templates/myprofile.html
+*
+*       comeniusonline
+*
+*  comeniusonline is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  comeniusonline is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with comeniusonline; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*  For questions contact
+*  cuzi@openmail.cc
+*
+* @copyright 2011 cuzi
+* @author cuzi
+* @package comeniusonline
+* @version 1.06
+* @license http://gnu.org/copyleft/gpl.html GNU GPL
+*}
+
+<h1>Europe on the Move - Questionnaire</h1>
+
+{if $myprofile}
+
+<table class="fl" border="1" rules="all" width="100%"  style="font-size:smaller;">
+
+    <colgroup>
+        <col width="30%">
+        <col width="70%">
+    </colgroup>
+
+
+    <tr>
+        <td>Name</td>
+        <td>{$myprofile->field.surname|escape}</td>
+        <td rowspan="10">
+            {if $photo}
+            <img style="max-width:300px; max-height:280px;" alt="Profile photo" src="photo.php?who={$photo}"/>
+            {/if}
+            {if $myprofile->field.photo and $allusers}
+            <img style="max-width:300px; max-height:280px;" alt="Profile photo" src="photo.php?who={$myprofile->field.name}"/>
+            {/if}
+        </td>
+    </tr>
+
+
+    <tr>
+        <td>First name</td>
+        <td>{$myprofile->field.firstname|escape}</td>
+    </tr>
+
+    <tr>
+        <td>Gender</td>
+        <td {if $allusers and not $myprofile->field.sex}class="red"{/if}>{if $myprofile->field.sex == 1}Male{/if}{if $myprofile->field.sex == 2}Female{/if}</td>
+    </tr>
+    <tr>
+        <td>Street</td>
+        <td {if $allusers and not $myprofile->field.address_street}class="red"{/if}>{$myprofile->field.address_street|escape}</td>
+    </tr>
+    <tr>
+        <td>Postcode</td>
+        <td {if $allusers and not $myprofile->field.address_postcode}class="red"{/if}>{$myprofile->field.address_postcode|escape}</td>
+    </tr>
+    <tr>
+        <td>Town</td>
+        <td {if $allusers and not $myprofile->field.adress_town}class="red"{/if}>{$myprofile->field.address_town|escape}</td>
+    </tr>
+    <tr>
+        <td>Home Country</td>
+        <td {if $allusers and not $myprofile->field.adress_country}class="red"{/if}>{strip}
+            {foreach item=country from=$countries}
+            {if $myprofile->field.adress_country == $country.id}{$country.title}{/if}
+            {/foreach}
+            {/strip}</td>
+    </tr>
+    <tr>
+        <td>Home School</td>
+        <td {if $allusers and not $myprofile->field.homeschool}class="red"{/if}>{strip}
+            {foreach item=school from=$schools}
+            {if $myprofile->field.homeschool == $school.id}{$school.title}{/if}
+            {/foreach}
+            {/strip}</td>
+    </tr>
+    <tr>
+        <td>Destination School</td>
+        <td {if $allusers and not $myprofile->field.destschool}class="red"{/if}>{strip}
+            {foreach item=school from=$schools}
+            {if $myprofile->field.destschool == $school.id}{$school.title}{/if}
+            {/foreach}
+            {/strip}</td>
+    </tr>
+    <tr>
+        <td>Phone Number</td>
+        <td {if $allusers and not $myprofile->field.phone_number}class="red"{/if}>{$myprofile->field.phone_number|escape}</td>
+    </tr>
+    <tr>
+        <td>Mobile Phone</td>
+        <td colspan="2">{$myprofile->field.phone_number_mobile|escape}</td>
+    </tr>
+    <tr>
+        <td>Email Address</td>
+        <td colspan="2" {if $allusers and not $myprofile->field.email}class="red"{/if}>{$myprofile->field.email|escape}</td>
+    </tr>
+    <tr>
+        <td>Date of Birth</td>
+        <td colspan="2" {if $allusers and not $myprofile->field.birth}class="red"{/if}>{if $myprofile->field.birth}{$myprofile->field.birth|date_format:"%m/%d/%Y"}{/if}</td>
+    </tr>
+    <tr>
+        <td>Favourite Lesson<br />1st</td>
+        <td colspan="2" {if $allusers and not $myprofile->field.favourite_lessons[1].subject}class="red"{/if}>{strip}
+            {foreach item=lesson from=$lessons}
+            {if $myprofile->field.favourite_lessons[1].subject == $lesson.id}{$lesson.title}{/if}
+            {/foreach}
+            <br />
+            <span class="italic">{$myprofile->field.favourite_lessons[1].text|escape}</span>
+            {/strip}</td>
+    </tr>
+    <tr>
+        <td>2nd</td>
+        <td colspan="2" {if $allusers and not $myprofile->field.favourite_lessons[2].subject}class="red"{/if}>{strip}
+            {foreach item=lesson from=$lessons}
+            {if $myprofile->field.favourite_lessons[2].subject == $lesson.id}{$lesson.title}{/if}
+            {/foreach}
+
+            <br />
+            <span class="italic">{$myprofile->field.favourite_lessons[2].text|escape}</span>
+            {/strip}</td>
+    </tr>
+    <tr>
+        <td>3rd</td>
+        <td colspan="2" {if $allusers and not $myprofile->field.favourite_lessons[3].subject}class="red"{/if}>{strip}
+            {foreach item=lesson from=$lessons}
+            {if $myprofile->field.favourite_lessons[3].subject == $lesson.id}{$lesson.title}{/if}
+            {/foreach}
+
+            <br />
+            <span class="italic">{$myprofile->field.favourite_lessons[3].text|escape}</span>
+            {/strip}</td>
+    </tr>
+    <tr>
+        <td>Hobbies</td>
+        <td colspan="2" {if $allusers and not $myprofile->field.hobbies[1].subject}class="red"{/if}>{strip}
+            {foreach item=hobby from=$hobbies}
+            {if $myprofile->field.hobbies[1].subject == $hobby.id}{$hobby.title}{/if}
+            {/foreach}
+            <br />
+            {foreach item=hobby from=$hobbies}
+            {if $myprofile->field.hobbies[2].subject == $hobby.id}{$hobby.title}{/if}
+            {/foreach}
+            <br />
+            {foreach item=hobby from=$hobbies}
+            {if $myprofile->field.hobbies[3].subject == $hobby.id}{$hobby.title}{/if}
+            {/foreach}
+            <br />
+            More/Others:
+            <br />
+            <span class="italic">{$myprofile->field.hobbies_text|escape}</span>
+            {/strip}</td>
+    </tr>
+
+    <tr>
+        <td>About my<br />family</td>
+        <td colspan="2" {if $allusers and not $myprofile->aboutmyfamily}class="red"{/if}><span class="italic">{$myprofile->field.aboutmyfamily|escape}</span></td>
+    </tr>
+
+
+
+    {assign var=i value=0}
+    {assign var=anyspecial value=0}
+    {foreach item=thing from=$special}
+    {assign var=a value="`$i+1`"}
+    {if $myprofile->field.special[$a].text}
+    {assign var=anyspecial value=1}
+    {/if}
+    {assign var=i value="`$i+1`"}
+    {/foreach}
+
+    {if $anyspecial}
+
+    <tr>
+        <td colspan="3" style="text-align:center;"><span class="bold">Something you should know:</span></td>
+    </tr>
+
+    {assign var=i value=0}
+    {foreach item=thing from=$special}
+    {assign var=a value="`$i+1`"}
+    {if $myprofile->field.special[$a].text}
+    <tr>
+        <td>{$thing.title}</td>
+        <td colspan="2">{strip}
+            {$myprofile->field.special[$a].text|escape}
+            {/strip}</td>
+    </tr>
+    {/if}
+    {assign var=i value="`$i+1`"}
+    {/foreach}
+
+    {else}
+
+    <tr>
+        <td colspan="3" style="text-align:center;"><span class="bold">Something you should know: Nothing</span>
+        </td>
+    </tr>
+
+    {/if}
+
+
+</table>
+
+{/if}

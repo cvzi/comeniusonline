@@ -1,0 +1,165 @@
+{**
+* templates/admin.html
+*
+*       comeniusonline
+*
+*  comeniusonline is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  comeniusonline is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with comeniusonline; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*  For questions contact
+*  cuzi@openmail.cc
+*
+* @copyright 2011 cuzi
+* @author cuzi
+* @package comeniusonline
+* @version 1.06
+* @license http://gnu.org/copyleft/gpl.html GNU GPL
+*}
+
+<div style="text-align:center;">
+    <img src="{$baseurl}images/icons/configuration.png" alt="Einstellungen"  class="pageimage"/>
+
+    <br />
+    <br />
+    <h2>Admin</h2>
+    <br />
+    <br />
+</div>
+
+{if $confirm_reset}
+<p>
+   Do you really want to reset the whole database? This action is irreversible!
+   <br />
+   <a href="#" class="button button-red" style="margin-top:10px" onclick="document.location.href+='&confirm=1{if $smarty.get.withoutteachers}withoutteachers=1{/if}';return false;">
+     <span>Reset database</span>
+   </a>
+   <br />
+   <a href="{$pages.admin.link}" class="button" style="background:silver; margin-top:10px">
+     <span>Cancel</span>
+   </a>
+</p>
+{/if}
+
+<h2>Teachers:</h2>
+
+<form action="{$pages.admin.link_get}do=createTeacher" method="post">
+    <fieldset>
+        <legend>New teacher</legend>
+        <div class="fl label">Loginname:</div>
+        <div class="fl label"><input type="text" name="username" value="" /></div>
+        <br class="cl"/>
+        <br />
+        <div class="fl label">Password:</div>
+        <div class="fl label"><input type="text" name="password" /></div>
+        <br class="cl"/>
+        <br />
+        <div class="fl label">Email:<br />(Not required)</div>
+        <div class="fl label"><input type="text" name="emailaddress" value="" /></div>
+        <br class="cl"/>
+        <br />
+        <div class="fl label">Send a welcome email<br />(Not required)</div>
+        <div class="fl label"><input type="checkbox" name="welcomemail" value="1" /> Contains a login-link to view the password.</div>
+
+        <br class="cl"/>
+        <br />
+
+
+        <input type="submit" value="Create teacher" />
+    </fieldset>
+
+    <br class="cl"/>
+
+</form>
+
+<h3>Current teachers:</h3>
+
+<div style="padding:5px; border:2px Black Solid; background:White; color:Black; ">
+
+    <table border="1" id="members_table">
+        {foreach item=member from=$allteachers}
+        <tr>
+            <td>Loginname:</td>
+            <td>&#8199; {$member.name}</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>&#8199; {if $member.email}<a href="mailto:{$member.email|escape:"url"}">{$member.email}</a>{/if}</td>
+        </tr>
+        {if $member.email}
+        <tr>
+            <td colspan="2">              
+                <a href="{$pages.admin.link_get}do=welcomeemail&amp;uid={$member.id}">Send welcome email</a>
+            </td>
+        </tr>
+        {/if}
+        <tr>
+            <td colspan="2">
+                <a href="{$pages.admin.link_get}do=deleteTeacher&amp;uid={$member.id}">Delete teacher</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                &#8199; 
+            </td>
+        </tr>
+        {/foreach}
+
+    </table>
+
+</div>
+<br />
+<br />
+
+<h2>Database:</h2>
+
+<br />
+<ul class="square">
+    <li>
+        <a href="{$pages.admin.link_get}do=optimize">MySQL: OPTIMIZE TABLE</a>
+    </li>
+    <li>
+        <a onclick="return confirm('Do you really want to reset the whole database?\n\nThis action is irreversible!')" href="{$pages.admin.link_get}do=reset">Reset (all)</a>
+        <br />
+        This will delete the whole database except the admininstrator accounts. Furthermore the photos folder will be cleared.
+    </li>
+    <li>
+        <a onclick="return confirm('Do you really want to reset the whole database?\n\nThis action is irreversible!')" href="{$pages.admin.link_get}do=reset&amp;withoutteachers=1">Reset (without teachers)</a>
+        <br />
+        Same as above, but teacher accounts will not be deleted!
+    </li>
+
+</ul>
+
+
+<h2>Configuration:</h2>
+<br />
+No edit here, you must use a FTP client.
+<br />
+<p>
+    {$navigationXML_name}
+    <br />
+    <textarea readonly="readonly" style="width:90%" rows="20">{$navigationXML_content}</textarea>
+</p>
+<br />
+<p>
+    {$comeniusXML_name}
+    <br />
+    <textarea readonly="readonly" style="width:90%" rows="20">{$comeniusXML_content}</textarea>
+</p>
+<br />
+<p>
+    {$errorsXML_name}
+    <br />
+    <textarea readonly="readonly" style="width:90%" rows="20">{$errorsXML_content}</textarea>
+</p>

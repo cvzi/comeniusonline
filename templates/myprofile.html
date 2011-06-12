@@ -1,0 +1,645 @@
+{**
+* templates/myprofile.html
+*
+*       comeniusonline
+*
+*  comeniusonline is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  comeniusonline is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with comeniusonline; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*  For questions contact
+*  cuzi@openmail.cc
+*
+* @copyright 2011 cuzi
+* @author cuzi
+* @package comeniusonline
+* @version 1.06
+* @license http://gnu.org/copyleft/gpl.html GNU GPL
+*}
+{if $user->get('group') == 1}
+
+<script type="text/javascript"> {literal}
+
+
+    var notes = {/literal}{if $notes_json}{$notes_json}{else}[]{/if}{literal};
+
+
+    var fields = {
+        surname : 'string',
+        firstname : 'string',
+        sex : 'int',
+        address_street : 'string',
+        address_postcode : 'string',
+        address_town : 'string',
+        adress_country : 'int',
+        homeschool : 'int',
+        destschool : 'int',
+        destcountry :' int',
+        phone_number : 'string',
+        phone_number_mobile : 'string',
+        email : 'string',
+        birth : 'string',
+        aboutmyfamily : 'string',
+        hobbies_text : 'string',
+        favourite_lessons : 'array',
+        hobbies : 'array',
+        special : 'array'
+    };
+
+    var memory = {};
+
+    function field_focus() {
+        if(this.tagName.toLowerCase() != 'input' && this.tagName.toLowerCase() != 'textarea' && this.tagName.toLowerCase() != 'select') {
+            return;
+        }
+
+
+        // Value
+        if(this.options) {
+            var value = this.options[this.selectedIndex].value.trim();
+        } else {
+            var value = this.value.trim();
+        }
+
+        // Fieldname
+        var fieldname = realfieldname = this.get('name');
+        if(fieldname.contains('_int[]')) {
+            var all = $$('*[name="'+fieldname+'"]');
+            for(var i = 0; i < all.length; i++) {
+                if(all[i] == this) {
+                    break;
+                }
+            }
+            realfieldname = fieldname.replace('_int[]','');
+            fieldname = fieldname.replace('_int[]','['+i+']');
+            value = parseInt(value);
+        } else if(fieldname.match(/\_text(\d+)/)) {
+            var i = fieldname.match(/\_text(\d+)/)[1];
+            realfieldname = fieldname.replace('_text'+i,'');
+            fieldname = fieldname.replace('_text'+i,'['+i+']');
+        }
+        else if(fields[fieldname] == 'int') {
+            value = parseInt(value);
+        }
+        
+        memory[fieldname]?memory[fieldname].push(value):memory[fieldname]=[value];
+    }
+
+
+    function field_changed(ev) {
+        if(this.tagName.toLowerCase() != 'input' && this.tagName.toLowerCase() != 'textarea' && this.tagName.toLowerCase() != 'select') {
+            return;
+        }
+
+
+        // Value
+        if(this.options) {
+            var value = this.options[this.selectedIndex].value.trim();
+        } else {
+            var value = this.value.trim();
+        }
+
+        // Fieldname
+        var fieldname = realfieldname = this.get('name');
+        var fieldtype = 'text';
+        if(fieldname.contains('_int[]')) {
+            var all = $$('*[name="'+fieldname+'"]');
+            for(var i = 0; i < all.length; i++) {
+                if(all[i] == this) {
+                    break;
+                }
+            }
+            realfieldname = fieldname.replace('_int[]','');
+            fieldname = fieldname.replace('_int[]','['+i+']');
+            value = parseInt(value);
+            fieldtype = 'int';
+        } else if(fieldname.match(/\_text(\d+)/)) {
+            var i = fieldname.match(/\_text(\d+)/)[1];
+            realfieldname = fieldname.replace('_text'+i,'');
+            fieldname = fieldname.replace('_text'+i,'['+i+']');
+        } 
+        else if(fields[fieldname] == 'int') {
+            value = parseInt(value);
+            fieldtype = 'int';
+        }
+
+        var statusimg = this.getNext('img.statusimg');
+        var statustxt = this.getNext('span.statustxt')
+        statusimg.setStyle('background','url('+img_spinner+')');
+        var el = this;
+        var jsonRequest = new Request.JSON({
+            url: (baseurl?baseurl:'') + 'json.php',
+            onSuccess: function(obj){
+                if(obj.result == 1) {
+                    statusimg.setStyle('background','url('+img_accept+')');
+                    statustxt.set('text','Saved');
+                    el.getParent().set('class','green');
+                } else {
+                    statusimg.setStyle('background','url('+img_error+')');
+                    statustxt.set('text','Error, try Save-button at the bottom of the page');
+                    el.getParent().set('class','red');
+                }
+            }
+        }).get({
+            'q': 'myprofile',
+            'fieldname':fieldname,
+            'fieldvalue':value,
+            'fieldtype':fieldtype
+        });
+
+    }
+
+    var emptyfields = 0;
+
+
+    var img_spinner = baseurl+'images/spinner32.gif';
+    var img_empty = baseurl+'images/empty.png';
+    var img_accept = baseurl+'images/icons/bullet_accept.png';
+    var img_deny = baseurl+'images/icons/bullet_deny.png';
+    var img_error = baseurl+'images/icons/bullet_error.png';
+
+
+    function field_prepare(elist) {
+
+        for(var i = 0; i < elist.length; i++) {
+            if(elist[i].tagName.toLowerCase() != 'input' && elist[i].tagName.toLowerCase() != 'textarea' && elist[i].tagName.toLowerCase() != 'select') {
+                continue;
+            }
+            if(elist[i].type == 'button' || elist[i].type == 'submit' || elist[i].type == 'file') {
+                continue;
+            }
+
+            elist[i].addEvent('change',field_changed);
+            elist[i].addEvent('focus',field_focus);
+
+            if(elist[i].retrieve('prepared')) {
+                continue;
+            }
+            var empty = true;
+
+            if(elist[i].options) { // Select
+                if(elist[i].selectedIndex == 0) {
+                    emptyfields++;
+                    elist[i].parentNode.set('class','red');
+                } else {
+                    if(elist[i].parentNode.get('class') != 'red') {
+                        elist[i].parentNode.set('class','green');
+                    }
+                    empty = false;
+                }
+            } else if(elist[i].type == 'radio') { // Radio
+                var allradios = $$('*[name="'+elist[i].name+'"]');
+                allradios.store('prepared',true); // Is always green
+                if(elist[i].parentNode.get('class') != 'red') {
+                    elist[i].parentNode.set('class','green');
+                }
+                empty = false;
+            } else { // Input,textarea
+                if(!elist[i].value || !elist[i].value.trim() || ($(elist[i].id+'_dec') && elist[i].value == $(elist[i].id+'_dec').get('text'))) {
+                    emptyfields++;
+                    elist[i].parentNode.set('class','red');
+                } else {
+                    if(elist[i].parentNode.get('class') != 'red') {
+                        elist[i].parentNode.set('class','green');
+                    }
+                    empty = false;
+                }
+
+            }
+
+            var span = new Element('span',{'class':'statustxt',src:img_empty,width:32,height:32}).inject(elist[i],'after');
+            var img = new Element('img',{'class':'statusimg',src:img_empty,width:32,height:32}).inject(elist[i],'after');
+            if(empty) {
+                img.setStyle('background','url('+img_deny+')');
+            } else {
+                img.setStyle('background','url('+img_accept+')');
+            }
+
+
+            if(elist[i].type == 'radio' && elist[i].getNext('label')) {
+                img.inject(elist[i].parentNode,'bottom');
+                span.inject(elist[i].parentNode,'bottom');
+            }
+
+
+            elist[i].store('prepared',true);
+
+        }
+
+
+    }
+
+    // Notes
+    function loadNotes(noteslist) {
+        for(var i = 0; i < noteslist.length; i++) {
+            var note = noteslist[i];
+            if($(note.position)) {
+                showANote(note);
+                if($(note.position).tagName.toLowerCase() == 'tr' && $(note.position).getElements('td')) {
+                    $(note.position).getElements('td').set('class','yellow');
+                }
+            }
+
+        }
+    }
+    function showANote(note) {
+        var dim = $(note.position).getCoordinates();
+        var top = dim.top+15;
+        var left = dim.left+dim.width-10;
+        var div = new Element('div',{'class':'note',styles:{top:top,left:left}}).inject(document.body);
+        var h2 = new Element('div',{'class':'heading',text:'A teacher commented this entry:'}).inject(div);
+        var p = new Element('p',{text:note.text}).inject(div);
+    }
+
+
+
+
+    window.addEvent('domready', function() {
+
+        Locale.use('en-US');
+
+
+        loadNotes(notes);
+
+
+        // Picker.Date.js l.315 onchange Event added
+        if($('birth')) {
+            new Picker.Date($('birth'), {
+                timePicker: false,
+                positionOffset: {x: 5, y: 0},
+                pickerClass: 'datepicker_vista',
+                useFadeInOut: !Browser.ie
+            });
+        }
+
+
+        if($('home_country')) {
+            $('home_country').addEvent('change',function() {
+                if(!this.options[this.selectedIndex].get('data')) {
+                    return;
+                }
+                if($('phone_number').value.trim() == '' || $('phone_number').value == $('phone_number_dec').get('text')) {
+                    $('phone_number').value = '00'+this.options[this.selectedIndex].get('data')+' ';
+                    $('phone_number').setStyle('color',$('phone_number').retrieve('color'));
+                } else if($('phone_number').value.match(/^00\d{2} $/)) {
+                    $('phone_number').value = '00'+this.options[this.selectedIndex].get('data')+' ';
+                }
+
+
+            });
+
+
+
+        }
+
+
+        // Field Requests
+        for(var fieldname in fields) {
+            if(fields[fieldname] == 'string' || fields[fieldname] == 'int') {
+                if($$('input[name='+fieldname+']')[0]) {
+                    field_prepare($$('input[name='+fieldname+']'));
+                }
+            } else if(fields[fieldname] == 'array') {
+                if($$('*[name="'+fieldname+'_int[]"]')[0]) {
+                    field_prepare($$('*"name="'+fieldname+'_int[]"]'));
+                }
+                if($$('*[name="'+fieldname+'_text[]"]')[0]) {
+                    field_prepare($$('*"name="'+fieldname+'_text[]"]'));
+                }
+            }
+
+        }
+        $('missingfields').set('text',emptyfields);
+
+
+
+
+    });
+
+
+    {/literal}</script>
+
+
+<div style="text-align:center;" class="pageimage">
+    <img src="{$baseurl}images/icons/user-admin.png" alt="" />
+</div>
+
+<br />
+<br />
+
+<h1>Europe on the Move</h1>
+<h1>Questionnaire</h1>
+
+<h2>Let me present myself</h2>
+
+<form action="{$pages.myprofile.link}" method="post" enctype="multipart/form-data">
+
+    <table class="features-table">
+        <thead>
+            <tr>
+                <td>Photo</td>
+                <td><input type="file" name="profileimage" /><input type="submit" name="saveit" value="Upload" /></td>
+            </tr>
+        </thead>
+
+
+        <tfoot>
+            <tr>
+                <td>
+                    <input type="submit" name="handitin" value="Hand it in" />
+                </td>
+                <td>Missing fields: <span id="missingfields">0</span><br /> (Press Save to update)</td>
+            </tr>
+        </tfoot>
+        <tbody>
+
+
+            {if $myprofile->field.photo}
+            <tr id="tr_field_photo">
+                <td colspan="2"><img style="max-width:600px; max-height:300px;" alt="Profile photo" src="photo.php"/></td>
+            </tr>
+            {/if}
+
+            <tr id="tr_field_surname">
+                <td>Name</td>
+                <td>
+                    <input type="text" id="surname" name="surname" value="{$myprofile->field.surname}" />
+                    <span class="inputdec" id="surname_dec" title=" - Your last name">Surname</span>
+                </td>
+            </tr>
+            <tr id="tr_field_firstname">
+                <td>First name</td>
+                <td>
+                    <input type="text" id="firstname" name="firstname" value="{$myprofile->field.firstname}" />
+                    <span class="inputdec" id="firstname_dec" title=" ">Firstname</span>
+                </td>
+            </tr>
+            <tr id="tr_field_sex">
+                <td>Gender</td>
+                <td>
+                    <input type="radio" name="sex" value="1" id="sex1" {if $myprofile->field.sex == 1}checked="checked"{/if} /><label for="sex1">Male</label>
+                    <br />
+                    <input type="radio" name="sex" value="2" id="sex2" {if $myprofile->field.sex == 2}checked="checked"{/if} /><label for="sex2">Female</label>
+                </td>
+            </tr>
+            <tr id="tr_field_address_street">
+                <td>Street</td>
+                <td>
+                    <input type="text" id="address_street" name="address_street" value="{$myprofile->field.address_street}" />
+                    <span class="inputdec" id="address_street_dec" title=" ">Street name and number</span>
+                </td>
+            </tr>
+            <tr id="tr_field_adress_postcode">
+                <td>Postcode</td>
+                <td>
+                    <input type="text" id="address_postcode" name="address_postcode" value="{$myprofile->field.address_postcode}"  />
+                    <span class="inputdec" id="address_postcode_dec" title=" ">Postal code</span>
+                </td>
+            </tr>
+            <tr id="tr_field_address_town">
+                <td>Town</td>
+                <td>
+                    <input type="text" id="address_town" name="address_town" value="{$myprofile->field.address_town}"  />
+                    <span class="inputdec" id="address_town_dec" title=" ">City/Town/Village</span>
+                </td>
+            </tr>
+            <tr id="tr_field_adress_country">
+                <td>Home Country</td>
+                <td>
+                    <select name="adress_country" id="home_country">
+                        <option value="0">Please choose</option>
+                        {foreach item=country from=$countries}
+                        <option data="{$country.intdialingcode}" value="{$country.id}" {if $myprofile->field.adress_country == $country.id}selected="selected" {/if}>{$country.title}</option>
+                        {/foreach}
+                    </select>
+                </td>
+            </tr>
+            <tr id="tr_field_homeschool">
+                <td>Home School</td>
+                <td>
+                    <select name="homeschool" id="homeschool">
+                        <option value="0">Please choose</option>
+                        {foreach item=school from=$schools}
+                        <option value="{$school.id}" {if $myprofile->field.homeschool == $school.id}selected="selected" {/if}>{$school.title}</option>
+                        {/foreach}
+                    </select>
+                </td>
+            </tr>
+            <tr id="tr_field_destschool">
+                <td>Destination School</td>
+                <td>
+                    <select name="destschool" id="destschool">
+                        <option value="0">Please choose</option>
+                        {foreach item=school from=$schools}
+                        <option value="{$school.id}" {if $myprofile->field.destschool == $school.id}selected="selected" {/if}>{$school.title}</option>
+                        {/foreach}
+                    </select>
+                </td>
+            </tr>
+            <tr id="tr_field_phone_number">
+                <td>Phone Number<br />
+			(with international prefix 00..)</td>
+                <td>
+                    <input type="text" name="phone_number" value="{$myprofile->field.phone_number}" id="phone_number" />
+                    <span class="inputdec" id="phone_number_dec" title=" - If you choose a home country above, the international prefix will be entered automatically">Phone Number</span>
+                </td>
+            </tr>
+            <tr id="tr_field_phone_number_mobile">
+                <td>Mobile Phone Number</td>
+                <td>
+                    <input type="text" id="phone_number_mobile" name="phone_number_mobile" value="{$myprofile->field.phone_number_mobile}" />
+                    <span class="inputdec" id="phone_number_mobile_dec" title=" - Not required">Mobile/Cell Phone</span>
+                </td>
+            </tr>
+            <tr id="tr_field_email">
+                <td>Email Address</td>
+                <td>
+                    <input type="text" id="email" name="email" value="{$myprofile->field.email}" />
+                    <span class="inputdec" id="email_dec" title=" ">Email adress</span>
+                </td>
+            </tr>
+            <tr id="tr_field_birth">
+                <td>Date of Birth</td>
+                <td>
+                    <input type="text" id="birth" name="birth" value="{if $myprofile->field.birth}{$myprofile->field.birth|date_format:"%m/%d/%Y"}{/if}" />
+                           <span class="inputdec" id="birth_dec" title=" ">Month/Day/Year</span>
+                </td>
+            </tr>
+            <tr id="tr_field_favourite_lessons1">
+                <td>Favourite Lesson</td>
+                <td><br />
+                    <span class="bold">1st</span>
+                    <br />
+                    <select name="favourite_lessons_int[]">
+                        <option value="0">Please choose</option>
+                        {foreach item=lesson from=$lessons}
+                        <option value="{$lesson.id}" {if $myprofile->field.favourite_lessons[1].subject == $lesson.id}selected="selected" {/if}>{$lesson.title}</option>
+                        {/foreach}
+                    </select>
+                    <br />
+                    Comment:
+                    <br />
+                    <textarea id="favourite_lessons_text_1" name="favourite_lessons_text0" cols="36" rows="3">{$myprofile->field.favourite_lessons[1].text}</textarea>
+                    <span class="inputdec" id="favourite_lessons_text_1_dec" title=" - What do you like about it? Why did you choose this subject? ...?">Reasons etc.</span>
+
+                    <br />
+                    <br />
+                </td>
+            </tr>
+            <tr id="tr_field_favourite_lessons2">
+                <td>Favourite Lesson</td>
+                <td><br />
+                    <span class="bold">2nd</span>
+                    <br />
+                    <select name="favourite_lessons_int[]">
+                        <option value="0">Please choose</option>
+                        {foreach item=lesson from=$lessons}
+                        <option value="{$lesson.id}" {if $myprofile->field.favourite_lessons[2].subject == $lesson.id}selected="selected" {/if}>{$lesson.title}</option>
+                        {/foreach}
+                    </select>
+                    <br />
+                    Comment:
+                    <br />
+                    <textarea id="favourite_lessons_text_2" name="favourite_lessons_text1" cols="36" rows="3">{$myprofile->field.favourite_lessons[2].text}</textarea>
+                    <span class="inputdec" id="favourite_lessons_text_2_dec" title=" - What do you like about it? Why did you choose this subject? ...?">Reasons etc.</span>
+                    <br />
+                    <br />
+                </td>
+            </tr>
+            <tr id="tr_field_favourite_lessons3">
+                <td>Favourite Lesson</td>
+                <td><br />
+                    <span class="bold">3rd</span>
+                    <br />
+                    <select name="favourite_lessons_int[]">
+                        <option value="0">Please choose</option>
+                        {foreach item=lesson from=$lessons}
+                        <option value="{$lesson.id}" {if $myprofile->field.favourite_lessons[3].subject == $lesson.id}selected="selected" {/if}>{$lesson.title}</option>
+                        {/foreach}
+                    </select>
+                    <br />
+                    Comment:
+                    <br />
+                    <textarea id="favourite_lessons_text_3" name="favourite_lessons_text2" cols="36" rows="3">{$myprofile->field.favourite_lessons[3].text}</textarea>
+                    <span class="inputdec" id="favourite_lessons_text_3_dec" title=" - What do you like about it? Why did you choose this subject? ...?">Reasons etc.</span>
+                    <br />
+                    <br />
+                </td>
+            </tr>
+            <tr id="tr_field_hobbies">
+                <td>Hobbies
+                    <br />
+	(three or more specific interests)
+                </td>
+                <td>
+                    <span class="bold">1st</span>
+                    <select name="hobbies_int[]">
+                        <option value="0">Please choose</option>
+                        {foreach item=hobby from=$hobbies}
+                        <option value="{$hobby.id}" {if $myprofile->field.hobbies[1].subject == $hobby.id}selected="selected" {/if}>{$hobby.title}</option>
+                        {/foreach}
+                    </select>
+                    <br />
+                    <br />
+                    <span class="bold">2nd</span>
+                    <select name="hobbies_int[]">
+                        <option value="0">Please choose</option>
+                        {foreach item=hobby from=$hobbies}
+                        <option value="{$hobby.id}" {if $myprofile->field.hobbies[2].subject == $hobby.id}selected="selected" {/if}>{$hobby.title}</option>
+                        {/foreach}
+                    </select>
+                    <br />
+                    <br />
+                    <span class="bold">3rd</span>
+                    <select name="hobbies_int[]">
+                        <option value="0">Please choose</option>
+                        {foreach item=hobby from=$hobbies}
+                        <option value="{$hobby.id}" {if $myprofile->field.hobbies[3].subject == $hobby.id}selected="selected" {/if}>{$hobby.title}</option>
+                        {/foreach}
+                    </select>
+                    <br />
+                    <br />
+                    <span class="bold">More/Others:</span>
+                    <br />
+                    <textarea id="hobbies_text" name="hobbies_text" cols="36" rows="3">{$myprofile->field.hobbies_text|escape}</textarea>
+                    <span class="inputdec" id="hobbies_text_dec" title=" ">More interests</span>
+                    <br />
+                    <br />
+                </td>
+            </tr>
+
+            <tr id="tr_field_aboutmyfamily">
+                <td>About my family</td>
+                <td>
+                    <textarea id="aboutmyfamily" name="aboutmyfamily" cols="36" rows="8">{$myprofile->field.aboutmyfamily|escape}</textarea>
+                    <span class="inputdec" id="aboutmyfamily_dec" title=" - parents, their profession, brothers, sisters, their age, pets, situation of living, etc.">About my family</span>
+                    <br />
+                    <br />
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">Something you should know
+                </td>
+            </tr>
+
+            {assign var=i value=0}
+            {foreach item=thing from=$special}
+            {assign var=a value="`$i+1`"}
+            <tr id="tr_field_special{$i}">
+                <td>{$thing.title}</td>
+                <td>
+                    <textarea name="special_text{$i}" cols="36" rows="3">{$myprofile->field.special[$a].text}</textarea>
+                    <br />
+                    <br />
+                </td>
+            </tr>
+            {assign var=i value="`$i+1`"}
+            {/foreach}
+
+            <tr>
+                <td colspan="2">
+                    <input type="submit" name="saveit" value="Save" />
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <br />
+                    If you completed your profile you can hand it in. A teacher will approve it in order to disclose your profile to your partner.
+                    <br />
+                    After the approval you cannot change your profile anymore!
+                    <br />
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+
+</form>
+
+
+
+<div style="text-align:center;">
+    <img onclick="document.location.href=baseurl+'print.php?q=profile&amp;my=true'" src="{$baseurl}images/icons/printer.png" alt="" class="pageimage" />
+</div>
+
+
+{else}
+
+<h2>Administrators or teachers cannot create a profile</h2>
+
+
+
+{/if}

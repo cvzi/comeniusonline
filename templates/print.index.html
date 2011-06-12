@@ -1,0 +1,120 @@
+{**
+* templates/print_index.html
+*
+*       comeniusonline
+*
+*  comeniusonline is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  comeniusonline is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with comeniusonline; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*  For questions contact
+*  cuzi@openmail.cc
+*
+* @copyright 2011 cuzi
+* @author cuzi
+* @package comeniusonline
+* @version 1.06
+* @license http://gnu.org/copyleft/gpl.html GNU GPL
+*}
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="de" >
+    <head>
+        <title>Comenius</title>
+
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta http-equiv="Content-Language" content="en" />
+
+        <link rel="shortcut icon" href="favicon.gif" />
+        <link rel="icon" type="image/gif" href="favicon.gif" />
+
+        <link rel="stylesheet" type="text/css" href="{$baseurl}css.php?q=general,print" />
+
+
+        <script type="text/javascript" src="{$baseurl}js/mootools-core-1.3.js"></script>
+        <script type="text/javascript" src="{$baseurl}js/mootools-more-1.3.js"></script>
+
+        <script type="text/javascript">
+            var baseurl = '{$baseurl}';
+
+            {if $wide_content} {literal}
+
+            window.addEvent('domready', function() {
+                $('left').setStyle('width','700px');
+                $('content').setStyle('background-position','0 0');
+            });
+
+            Locale.use('en-US');
+
+            {/literal}{/if}
+
+            {if $jscode}{$jscode}{/if}
+
+        </script>
+        <script type="text/javascript" src="{$baseurl}js/main.js"></script>
+        {foreach item=path from=$jsscripts}
+        <script type="text/javascript" src="{$baseurl}js/{$path}"></script>
+        {/foreach}
+
+
+
+        <style type="text/css">
+            {literal}
+
+
+            * {
+ font-family:"Comic Sans MS","times new roman",times,serif;
+ text-align:justify;
+}
+
+            {/literal}
+
+        </style>
+
+
+    </head>
+    <body>
+
+        <div id="content">
+
+            {if $errors}
+            {section name=i loop=$errors}
+            {strip}
+            <div class="{$errors[i].class}">{$errors[i].text}</div>
+            <br />
+            <br />
+            {/strip}
+            {/section}
+            {/if}
+
+            {if $outputbuffer}
+            <div style="font-family: monospace; white-space: pre-wrap; border:3px black double">{$outputbuffer}</div>
+            <br />
+            <br />
+            {/if}
+
+            {if $moduleTpl}
+            {include file=$moduleTpl}
+            {/if}
+
+
+        </div>
+
+    </body>
+
+</html>
